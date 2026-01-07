@@ -37,6 +37,6 @@ void read_line(char *line, FILE *stream){
 ProgramState init_state(){
     LSystem l;
     l.axiom = NULL;
-    ProgramState state = {&l};
+    ProgramState state = {l};
     return state;
 }
