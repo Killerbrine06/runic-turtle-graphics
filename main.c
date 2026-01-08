@@ -71,7 +71,7 @@ int main(){
             }
             char *final = calloc(BUFFER_SIZE, sizeof(char));
             char *init = strdup(current_state.lsys.axiom);
-            deriv(init, n, current_state.lsys.rules, &final);
+            deriv(&init, n, current_state.lsys.rules, &final);
             printf("%s\n", final);
             free(final);
             free(init);

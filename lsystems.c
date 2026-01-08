@@ -36,7 +36,7 @@ LSystem load_lsys(char *path_to_file){
     return sys;
 }
 
-void deriv(char *init, const int n, char **next, char **final){
+void deriv(char **init, const int n, char **next, char **final){
     if(!n)
         return;
     
@@ -44,16 +44,16 @@ void deriv(char *init, const int n, char **next, char **final){
     (*final) = calloc(BUFFER_SIZE, sizeof(char));
     int len = 0;
     for(int i=0; i<strlen(init); i++){
-        if(!next[init[i]])
-            next[init[i]] = malloc(2), next[init[i]][0] = init[i], next[init[i]][1] = 0;
+        if(!next[(*init)[i]])
+            next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
 
-        if(len + strlen(next[init[i]]) >= sizeof((*final)))
+        if(len + strlen(next[(*init)[i]]) >= sizeof((*final)))
             realloc((*final), sizeof((*final)) + BUFFER_SIZE);
         
-        strcat((*final), next[init[i]]);
+        strcat((*final), next[(*init)[i]]);
     }
 
-    free(init);
-    init = strdup((*final));
+    free((*init));
+    (*init) = strdup((*final));
     deriv(init, n - 1, next, final);
 }

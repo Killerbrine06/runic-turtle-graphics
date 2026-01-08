@@ -1,5 +1,5 @@
 build:
-	@clang -g -Wall *.c -o main
+	@clang -g *.c -o main
 
 clean:
 	@rm -f main
