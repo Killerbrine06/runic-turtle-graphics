@@ -37,6 +37,97 @@ void read_line(char *line, FILE *stream){
 ProgramState init_state(){
     LSystem l;
     l.axiom = NULL;
+    l.rules = NULL;
+    l.rules_count = -1;
     ProgramState state = {l};
     return state;
+}
+
+void clear_stack(StackNode **stack){
+    while((*stack))
+        pop(stack);
+}
+
+void pop(StackNode **stack){
+    if(!(*stack))
+        return;
+    
+    if(!(*stack)->next){
+        free_lsys((*stack)->state.lsys);
+        free((*stack));
+        (*stack) = NULL;
+    }
+
+    StackNode *node = (*stack);
+    while(node->next->next)
+        node = node->next;
+
+    free_lsys(node->next->state.lsys);
+
+    free(node->next);
+    node->next = NULL;
+}
+
+ProgramState get_head(StackNode *stack){
+    StackNode *node = stack;
+    while(node->next)
+        node = node->next;
+    
+    return node->state;
+}
+
+void push(StackNode **stack, ProgramState state){
+    if(!(*stack)){
+        StackNode *new_node = malloc(sizeof(StackNode));
+        new_node->next = NULL;
+        new_node->state = state;
+        *stack = new_node;
+    }
+
+    StackNode *node = (*stack);
+
+    while(node->next)
+        node = node->next;
+    
+    StackNode *new_node = malloc(sizeof(StackNode));
+    new_node->next = NULL;
+    new_node->state = state;
+    node->next = new_node;
+}
+
+LSystem sys_dup(LSystem lsys){
+    LSystem new_lsys;
+    new_lsys.rules_count = lsys.rules_count;
+
+    if(lsys.axiom)
+        new_lsys.axiom = strdup(lsys.axiom);
+    else new_lsys.axiom = NULL;
+
+    if(lsys.rules){
+        new_lsys.rules = malloc(ALFABET_SIZE * sizeof(char*));
+        for(int i=0; i<ALFABET_SIZE; i++)
+            if(lsys.rules[i])
+                new_lsys.rules[i] = strdup(lsys.rules[i]);
+    } 
+    else new_lsys.rules = NULL;
+
+    return new_lsys;
+}
+
+ProgramState state_dup(ProgramState state){
+    ProgramState new_state;
+    new_state.lsys = sys_dup(state.lsys);
+
+    return new_state;
+}
+
+void free_lsys(LSystem sys){
+    if(sys.axiom)
+        free(sys.axiom);
+    
+    if(sys.rules){
+        for(int i=0; i<ALFABET_SIZE; i++)
+            if(sys.rules[i])
+                free(sys.rules[i]);
+    }
 }

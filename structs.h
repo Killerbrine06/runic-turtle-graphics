@@ -13,7 +13,7 @@ typedef struct {
 } ProgramState;
 
 typedef struct StackNode {
-    ProgramState *state;
+    ProgramState state;
     struct StackNode *next;
 } StackNode;
 

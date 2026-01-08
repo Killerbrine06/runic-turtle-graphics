@@ -21,7 +21,7 @@ LSystem load_lsys(char *path_to_file){
     sys.rules_count = strtol(line, &end, 10);
     free(line);
 
-    sys.rules = malloc(130 * sizeof(char*));
+    sys.rules = malloc(ALFABET_SIZE * sizeof(char*));
 
     for(int i=0; i<sys.rules_count; i++){
         line = malloc(BUFFER_SIZE);
