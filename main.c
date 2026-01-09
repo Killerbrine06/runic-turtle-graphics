@@ -37,6 +37,20 @@ int main(){
             }
         }
 
+        else if(!strcmp(cmd_name, "REDO")){
+            if(!redo_stack){
+                printf("Nothing to redo\n");
+                free(cmd_name);
+                continue;
+            }
+
+            ProgramState next_state = get_head(redo_stack);
+            push(&undo_stack, state_dup(current_state));
+            free_state(&current_state);
+            current_state = state_dup(next_state);
+            pop(&redo_stack);
+        }
+        
         else if(!strcmp(cmd_name, "LSYSTEM")){
             if(strlen(cmd) < 9)
                 printf("Failed to load %s\n", cmd + 7);
