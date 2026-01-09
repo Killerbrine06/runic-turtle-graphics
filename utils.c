@@ -56,6 +56,7 @@ void pop(StackNode **stack){
         free_lsys((*stack)->state.lsys);
         free((*stack));
         (*stack) = NULL;
+        return;
     }
 
     StackNode *node = (*stack);
@@ -82,6 +83,7 @@ void push(StackNode **stack, ProgramState state){
         new_node->next = NULL;
         new_node->state = state;
         *stack = new_node;
+        return;
     }
 
     StackNode *node = (*stack);

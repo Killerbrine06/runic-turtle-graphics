@@ -43,7 +43,7 @@ void deriv(char **init, const int n, char **next, char **final){
     free(*final);
     (*final) = calloc(BUFFER_SIZE, sizeof(char));
     int len = 0;
-    for(int i=0; i<strlen(init); i++){
+    for(int i=0; i<strlen((*init)); i++){
         if(!next[(*init)[i]])
             next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
 
@@ -52,7 +52,6 @@ void deriv(char **init, const int n, char **next, char **final){
         
         strcat((*final), next[(*init)[i]]);
     }
-
     free((*init));
     (*init) = strdup((*final));
     deriv(init, n - 1, next, final);

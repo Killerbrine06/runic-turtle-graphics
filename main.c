@@ -29,7 +29,7 @@ int main(){
             
             else {
                 ProgramState prev_state = get_head(undo_stack);
-                push(&redo_stack, current_state);
+                push(&redo_stack, state_dup(current_state));
                 free_lsys(current_state.lsys);
                 current_state = state_dup(prev_state);
                 pop(&undo_stack);
@@ -64,7 +64,7 @@ int main(){
             char *end;
             int n = strtol(cmd + 6, &end, 10);
 
-            if(!current_state.lsys.axiom){
+            if(current_state.lsys.rules_count == -1){
                 printf("No L-system loaded\n");
                 free(cmd_name);
                 continue;
