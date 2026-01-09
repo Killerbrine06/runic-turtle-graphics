@@ -102,15 +102,19 @@ int main(){
             char *path_to_file = malloc(strlen(cmd));
             strcpy(path_to_file, cmd + 5);
 
-            Image img = load_image(path_to_file);
-            if(img.w == -1){
+            Image new_img = load_image(path_to_file);
+            if(new_img.w == -1){
                 free(cmd_name);
                 free(path_to_file);
                 continue;
             }
 
-            printf("Loaded %s (PPM image %dx%d)\n", path_to_file, img.w, img.h);
-            // printf("(%d, %d, %d)\n", img.data[1][1].r, img.data[1][1].g, img.data[1][1].b);
+            printf("Loaded %s (PPM image %dx%d)\n", path_to_file, new_img.w, new_img.h);
+            ProgramState new_state = state_dup(current_state);
+            free_img(new_state.img);
+            new_state.img = img_dup(new_img);
+            update_state(&undo_stack, &redo_stack, &current_state, &new_state);
+            free_img(new_img);
             free(path_to_file);
         }
 

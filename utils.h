@@ -16,7 +16,8 @@ ProgramState state_dup(ProgramState state);
 LSystem sys_dup(LSystem lsys);
 Image img_dup(Image img);
 void free_lsys(LSystem sys);
-void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state);
 void free_state(ProgramState *state);
+void free_img(Image img);
+void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state);
 
 #endif
