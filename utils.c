@@ -33,13 +33,15 @@ void read_line(char *line, FILE *stream){
         line[strlen(line) - 1] = 0;
 }
 
-
 ProgramState init_state(){
     LSystem l;
     l.axiom = NULL;
     l.rules = NULL;
     l.rules_count = -1;
-    ProgramState state = {l};
+    Image img;
+    img.data = NULL;
+    img.w = -1;
+    ProgramState state = {img, l};
     return state;
 }
 
@@ -119,8 +121,30 @@ LSystem sys_dup(LSystem lsys){
 ProgramState state_dup(ProgramState state){
     ProgramState new_state;
     new_state.lsys = sys_dup(state.lsys);
+    new_state.img = img_dup(state.img);
 
     return new_state;
+}
+
+Image img_dup(Image img){
+    Image new_img;
+    new_img.w = img.w;
+    new_img.h = img.h;
+
+    if(!img.data){
+        new_img.data = NULL;
+        return new_img;
+    }
+
+    new_img.data = malloc(img.h * sizeof(Pixel*));
+    for(int i=0; i<img.h; i++){
+        if(img.data[i]){
+            new_img.data[i] = malloc(img.w * sizeof(Pixel));
+            memcpy(new_img.data[i], img.data[i], img.w * sizeof(Pixel));
+        }
+    }
+
+    return new_img;
 }
 
 void free_lsys(LSystem sys){
@@ -132,4 +156,29 @@ void free_lsys(LSystem sys){
             if(sys.rules[i])
                 free(sys.rules[i]);
     }
+}
+
+void free_img(Image img){
+    if(!img.data)
+        return;
+    
+    for(int i=0; i<img.h; i++)
+        if(img.data[i])
+            free(img.data[i]);
+    
+    free(img.data);
+}
+
+void free_state(ProgramState *state){
+    free_lsys(state->lsys);
+    free_img(state->img);
+}
+
+void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state){
+    clear_stack(redo_stack);
+    push(undo_stack, state_dup((*current_state)));
+    
+    free_state(current_state);
+    (*current_state) = state_dup((*new_state));
+    free_state(new_state);
 }

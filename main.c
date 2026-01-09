@@ -31,7 +31,7 @@ int main(){
             else {
                 ProgramState prev_state = get_head(undo_stack);
                 push(&redo_stack, state_dup(current_state));
-                free_lsys(current_state.lsys);
+                free_state(&current_state);
                 current_state = state_dup(prev_state);
                 pop(&undo_stack);
             }
@@ -51,10 +51,10 @@ int main(){
                 
                 else {
                     printf("Loaded %s (L-system with %d rules)\n", path_to_file, new_lsys.rules_count);
-                    clear_stack(&redo_stack);
-                    push(&undo_stack, state_dup(current_state));
-                    free_lsys(current_state.lsys);
-                    current_state.lsys = sys_dup(new_lsys);
+                    ProgramState new_state = state_dup(current_state);
+                    free_lsys(new_state.lsys);
+                    new_state.lsys = sys_dup(new_lsys);
+                    update_state(&undo_stack, &redo_stack, &current_state, &new_state);
                     free_lsys(new_lsys);
                 }
                 free(path_to_file);

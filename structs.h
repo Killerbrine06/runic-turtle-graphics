@@ -16,7 +16,7 @@ typedef struct {
 } Image;
 
 typedef struct {
-    // Image *img;
+    Image img;
     LSystem lsys;
     // Font *font;
 } ProgramState;
