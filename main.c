@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "structs.h"
 #include "lsystems.h"
+#include "image.h"
 
 int main(){
     char cmd[BUFFER_SIZE];
@@ -75,6 +76,28 @@ int main(){
             printf("%s\n", final);
             free(final);
             free(init);
+        }
+
+        else if(!strcmp(cmd_name, "LOAD")){
+            if(strlen(cmd) < 6){
+                printf("Failed to load\n");
+                free(cmd_name);
+                continue;
+            }
+
+            char *path_to_file = malloc(strlen(cmd));
+            strcpy(path_to_file, cmd + 5);
+
+            Image img = load_image(path_to_file);
+            if(img.w == -1){
+                free(cmd_name);
+                free(path_to_file);
+                continue;
+            }
+
+            printf("Loaded %s (PPM image %dx%d)\n", path_to_file, img.w, img.h);
+            // printf("(%d, %d, %d)\n", img.data[1][1].r, img.data[1][1].g, img.data[1][1].b);
+            free(path_to_file);
         }
 
         free(cmd_name);

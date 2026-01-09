@@ -7,6 +7,15 @@ typedef struct {
 } LSystem;
 
 typedef struct {
+    unsigned char r, g, b;
+} Pixel;
+
+typedef struct {
+    int w, h;
+    Pixel **data;
+} Image;
+
+typedef struct {
     // Image *img;
     LSystem lsys;
     // Font *font;
