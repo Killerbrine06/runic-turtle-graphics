@@ -28,7 +28,7 @@ void read_line(char *line, FILE *stream){
     //     }
     // }
 
-    fgets(line, sizeof(line), stream);
+    fgets(line, BUFFER_SIZE, stream);
     if(line[strlen(line) - 1] == '\n')
         line[strlen(line) - 1] = 0;
 }
@@ -181,4 +181,28 @@ void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *
     free_state(current_state);
     (*current_state) = state_dup((*new_state));
     free_state(new_state);
+}
+
+void get_turtle_args(Turtle *t, char *cmd){
+    char *cuv = strtok(cmd, " "), *end;
+    t->x = strtold(cuv, &end);
+    cuv = strtok(NULL, " ");
+    t->y = strtold(cuv, &end);
+    cuv = strtok(NULL, " ");
+    t->d = strtold(cuv, &end);
+    
+    cuv = strtok(NULL, " ");
+    t->teta = strtold(cuv, &end);
+    cuv = strtok(NULL, " ");
+    t->delta = strtod(cuv, &end);
+
+    cuv = strtok(NULL, " ");
+    t->n = strtol(cuv, &end, 10);
+
+    cuv = strtok(NULL, " ");
+    t->r = strtol(cuv, &end, 10);
+    cuv = strtok(NULL, " ");
+    t->g = strtol(cuv, &end, 10);
+    cuv = strtok(NULL, " ");
+    t->b = strtol(cuv, &end, 10);
 }

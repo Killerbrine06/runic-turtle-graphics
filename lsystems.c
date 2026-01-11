@@ -42,13 +42,14 @@ void deriv(char **init, const int n, char **next, char **final){
     
     free(*final);
     (*final) = calloc(BUFFER_SIZE, sizeof(char));
-    int len = 0;
+    int size = BUFFER_SIZE;
     for(int i=0; i<strlen((*init)); i++){
         if(!next[(*init)[i]])
             next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
 
-        if(len + strlen(next[(*init)[i]]) >= sizeof((*final)))
-            realloc((*final), sizeof((*final)) + BUFFER_SIZE);
+        const int len = strlen((*final));
+        if(len + strlen(next[(*init)[i]]) + 1 >= size)
+            size += BUFFER_SIZE, *final = realloc((*final), size);
         
         strcat((*final), next[(*init)[i]]);
     }

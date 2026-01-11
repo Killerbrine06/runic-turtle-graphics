@@ -5,6 +5,7 @@
 #include "structs.h"
 #include "lsystems.h"
 #include "image.h"
+#include "turtle.h"
 
 void perform_load(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack){
     char *path_to_file = malloc(strlen(cmd));
@@ -43,6 +44,39 @@ void perform_lsystem(char *cmd, ProgramState *current_state, StackNode **undo_st
         free_lsys(new_lsys);
     }
     free(path_to_file);
+}
+
+void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack){
+    if(current_state->img.w == -1){
+        printf("No image loaded\n");
+        return;
+    }
+
+    if(current_state->lsys.rules_count == -1){
+        printf("No L-system loaded\n");
+        return;
+    }
+
+    Turtle t;
+    t.stack = NULL;
+    get_turtle_args(&t, cmd + 7);
+    char *end;
+    char *final = calloc(BUFFER_SIZE, sizeof(char));
+    char *init = strdup(current_state->lsys.axiom);
+    deriv(&init, t.n, current_state->lsys.rules, &final);
+    // printf("%d %s\n", t.n, final);
+    Image new_img = execute_string(&t, final, current_state->img);
+    free(t.stack);
+    free(init);
+    free(final);
+
+    ProgramState new_state = state_dup((*current_state));
+    free_img(new_state.img);
+    new_state.img = img_dup(new_img);
+    update_state(undo_stack, redo_stack, current_state, &new_state);
+    free_img(new_img);
+
+    printf("Drawing done\n");
 }
 
 int main(){
@@ -125,6 +159,25 @@ int main(){
             }
 
             perform_load(cmd, &current_state, &undo_stack, &redo_stack);
+            // printf("%d %d %d\n", current_state.img.data[0][0].r, current_state.img.data[0][0].g, current_state.img.data[0][0].b);
+        }
+
+        else if(!strcmp(cmd_name, "SAVE")){
+            if(current_state.img.w == -1){
+                printf("No image loaded\n");
+                free(cmd_name);
+                continue;
+            }
+
+            char *path_to_file = malloc(strlen(cmd));
+            strcpy(path_to_file, cmd + 5);
+            save_image(current_state.img, path_to_file);
+            printf("Saved %s\n", path_to_file);
+            free(path_to_file);
+        }
+        
+        else if(!strcmp(cmd_name, "TURTLE")){
+            perform_turtle(cmd, &current_state, &undo_stack, &redo_stack);
         }
 
         free(cmd_name);

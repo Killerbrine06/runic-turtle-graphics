@@ -36,3 +36,17 @@ Image load_image(char *path_to_file){
     fclose(file);
     return img;
 }
+
+void save_image(Image img, char *path_to_file){
+    FILE *file = fopen(path_to_file, "wb");
+    fprintf(file, "P6\n%d %d\n255\n", img.w, img.h);
+
+    for(int i=img.h-1; i>=0; i--)
+        for(int j=0; j<img.w; j++){
+            fwrite(&img.data[i][j].r, 1, 1, file);
+            fwrite(&img.data[i][j].g, 1, 1, file);
+            fwrite(&img.data[i][j].b, 1, 1, file);
+        }
+    
+    fclose(file);
+}
