@@ -21,12 +21,12 @@ LSystem load_lsys(char *path_to_file){
     sys.rules_count = strtol(line, &end, 10);
     free(line);
 
-    sys.rules = malloc(ALFABET_SIZE * sizeof(char*));
+    sys.rules = calloc(ALFABET_SIZE, sizeof(char*));
 
     for(int i=0; i<sys.rules_count; i++){
         line = malloc(BUFFER_SIZE);
         read_line(line, lsys_file);        
-        sys.rules[line[0]] = malloc(strlen(line) - 2);
+        sys.rules[line[0]] = malloc(strlen(line) + 1);
         strcpy(sys.rules[line[0]], line + 2);
         free(line);
     }

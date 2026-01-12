@@ -108,7 +108,7 @@ LSystem sys_dup(LSystem lsys){
     else new_lsys.axiom = NULL;
 
     if(lsys.rules){
-        new_lsys.rules = malloc(ALFABET_SIZE * sizeof(char*));
+        new_lsys.rules = calloc(ALFABET_SIZE, sizeof(char*));
         for(int i=0; i<ALFABET_SIZE; i++)
             if(lsys.rules[i])
                 new_lsys.rules[i] = strdup(lsys.rules[i]);
