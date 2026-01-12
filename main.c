@@ -33,7 +33,7 @@ void perform_lsystem(char *cmd, ProgramState *current_state, StackNode **undo_st
     LSystem new_lsys = load_lsys(path_to_file);
 
     if(new_lsys.rules_count == -1)
-        printf("Failed to load %s\n", cmd + 7), new_lsys.axiom = NULL;
+        printf("Failed to load %s\n", path_to_file), new_lsys.axiom = NULL;
     
     else {
         printf("Loaded %s (L-system with %d rules)\n", path_to_file, new_lsys.rules_count);
@@ -94,6 +94,7 @@ int main(){
 
         if(!strcmp(cmd_name, "EXIT")){
             free(cmd_name);
+            free_state(&current_state);
             clear_stack(&undo_stack);
             clear_stack(&redo_stack);
             break;
