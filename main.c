@@ -94,6 +94,8 @@ int main(){
 
         if(!strcmp(cmd_name, "EXIT")){
             free(cmd_name);
+            clear_stack(&undo_stack);
+            clear_stack(&redo_stack);
             break;
         }
 
