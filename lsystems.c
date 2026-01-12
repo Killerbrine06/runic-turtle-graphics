@@ -51,8 +51,18 @@ void deriv(char **init, int n, char **next, char **final){
                 next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
 
             const int len = strlen((*final));
-            if(len + strlen(next[(*init)[i]]) + 1 >= size)
-                size += BUFFER_SIZE, *final = realloc((*final), size);
+            if(len + strlen(next[(*init)[i]]) + 1 >= size){
+                char *new_ptr;
+                size += BUFFER_SIZE, new_ptr = realloc((*final), size);
+                if(!new_ptr){
+                    free((*final));
+                    free((*init));
+                    exit(-1);
+                }
+
+                free((*final));
+                (*final) = new_ptr;
+            }
             
             strcat((*final), next[(*init)[i]]);
         }
