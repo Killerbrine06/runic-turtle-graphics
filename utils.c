@@ -55,7 +55,7 @@ void pop(StackNode **stack){
         return;
     
     if(!(*stack)->next){
-        free_lsys((*stack)->state.lsys);
+        free_state((&(*stack)->state));
         free((*stack));
         (*stack) = NULL;
         return;
@@ -65,7 +65,7 @@ void pop(StackNode **stack){
     while(node->next->next)
         node = node->next;
 
-    free_lsys(node->next->state.lsys);
+    free_state((&node->next->state));
 
     free(node->next);
     node->next = NULL;
@@ -155,6 +155,8 @@ void free_lsys(LSystem sys){
         for(int i=0; i<ALFABET_SIZE; i++)
             if(sys.rules[i])
                 free(sys.rules[i]);
+        
+        free(sys.rules);
     }
 }
 
