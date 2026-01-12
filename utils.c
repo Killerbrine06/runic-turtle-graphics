@@ -41,7 +41,13 @@ ProgramState init_state(){
     Image img;
     img.data = NULL;
     img.w = -1;
-    ProgramState state = {img, l};
+    
+    ProgramState state;
+    state.last_output = malloc(2);
+    strcpy(state.last_output, "\0");
+    state.img = img;
+    state.lsys = l;
+
     return state;
 }
 
@@ -122,6 +128,7 @@ ProgramState state_dup(ProgramState state){
     ProgramState new_state;
     new_state.lsys = sys_dup(state.lsys);
     new_state.img = img_dup(state.img);
+    new_state.last_output = strdup(state.last_output);
 
     return new_state;
 }
@@ -174,6 +181,7 @@ void free_img(Image img){
 void free_state(ProgramState *state){
     free_lsys(state->lsys);
     free_img(state->img);
+    free(state->last_output);
 }
 
 void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state){

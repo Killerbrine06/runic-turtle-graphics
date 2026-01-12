@@ -19,9 +19,17 @@ void perform_load(char *cmd, ProgramState *current_state, StackNode **undo_stack
     }
 
     printf("Loaded %s (PPM image %dx%d)\n", path_to_file, new_img.w, new_img.h);
+
     ProgramState new_state = state_dup((*current_state));
     free_img(new_state.img);
     new_state.img = img_dup(new_img);
+
+    // Captarea outputului
+    int len = snprintf(NULL, 0, "Loaded %s (PPM image %dx%d)\n", path_to_file, new_img.w, new_img.h);
+    free(new_state.last_output);
+    new_state.last_output = malloc(len + 5);
+    snprintf(new_state.last_output, len + 1, "Loaded %s (PPM image %dx%d)\n", path_to_file, new_img.w, new_img.h);
+
     update_state(undo_stack, redo_stack, current_state, &new_state);
     free_img(new_img);
     free(path_to_file);
@@ -37,9 +45,17 @@ void perform_lsystem(char *cmd, ProgramState *current_state, StackNode **undo_st
     
     else {
         printf("Loaded %s (L-system with %d rules)\n", path_to_file, new_lsys.rules_count);
+
         ProgramState new_state = state_dup((*current_state));
         free_lsys(new_state.lsys);
         new_state.lsys = sys_dup(new_lsys);
+
+        // Captarea outputului
+        int len = snprintf(NULL, 0, "Loaded %s (L-system with %d rules)\n", path_to_file, new_lsys.rules_count);
+        free(new_state.last_output);
+        new_state.last_output = malloc(len + 5);
+        snprintf(new_state.last_output, len + 1, "Loaded %s (L-system with %d rules)\n", path_to_file, new_lsys.rules_count);
+
         update_state(undo_stack, redo_stack, current_state, &new_state);
         free_lsys(new_lsys);
     }
@@ -73,6 +89,8 @@ void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_sta
     ProgramState new_state = state_dup((*current_state));
     free_img(new_state.img);
     new_state.img = img_dup(new_img);
+    free(new_state.last_output);
+    new_state.last_output = strdup("Drawing done\n");
     update_state(undo_stack, redo_stack, current_state, &new_state);
     free_img(new_img);
 
@@ -110,6 +128,7 @@ int main(){
                 free_state(&current_state);
                 current_state = state_dup(prev_state);
                 pop(&undo_stack);
+                printf("%s", current_state.last_output);
             }
         }
 
@@ -125,6 +144,7 @@ int main(){
             free_state(&current_state);
             current_state = state_dup(next_state);
             pop(&redo_stack);
+            printf("%s", current_state.last_output);
         }
         
         else if(!strcmp(cmd_name, "LSYSTEM")){

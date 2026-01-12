@@ -16,6 +16,7 @@ typedef struct {
 } Image;
 
 typedef struct {
+    char *last_output;
     Image img;
     LSystem lsys;
     // Font *font;
