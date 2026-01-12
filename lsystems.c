@@ -36,24 +36,30 @@ LSystem load_lsys(char *path_to_file){
     return sys;
 }
 
-void deriv(char **init, const int n, char **next, char **final){
-    if(!n)
+void deriv(char **init, int n, char **next, char **final){
+    free((*final));
+    if(!n){
+        *final = strdup((*init));
         return;
-    
-    free(*final);
-    (*final) = calloc(BUFFER_SIZE, sizeof(char));
-    int size = BUFFER_SIZE;
-    for(int i=0; i<strlen((*init)); i++){
-        if(!next[(*init)[i]])
-            next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
-
-        const int len = strlen((*final));
-        if(len + strlen(next[(*init)[i]]) + 1 >= size)
-            size += BUFFER_SIZE, *final = realloc((*final), size);
-        
-        strcat((*final), next[(*init)[i]]);
     }
-    free((*init));
-    (*init) = strdup((*final));
-    deriv(init, n - 1, next, final);
+    while(n--){
+        (*final) = calloc(BUFFER_SIZE, sizeof(char));
+        int size = BUFFER_SIZE;
+
+        for(int i=0; i<strlen((*init)); i++){
+            if(!next[(*init)[i]])
+                next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
+
+            const int len = strlen((*final));
+            if(len + strlen(next[(*init)[i]]) + 1 >= size)
+                size += BUFFER_SIZE, *final = realloc((*final), size);
+            
+            strcat((*final), next[(*init)[i]]);
+        }
+        free((*init));
+        (*init) = strdup((*final));
+        free((*final));
+    }
+
+    (*final) = strdup((*init));
 }
