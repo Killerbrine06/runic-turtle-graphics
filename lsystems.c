@@ -44,14 +44,14 @@ void deriv(char **init, int n, char **next, char **final){
     }
     while(n--){
         (*final) = calloc(BUFFER_SIZE, sizeof(char));
-        int size = BUFFER_SIZE;
+        int size = BUFFER_SIZE, len = 0;
 
         for(int i=0; i<strlen((*init)); i++){
             if(!next[(*init)[i]])
                 next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
 
-            const int len = strlen((*final));
-            if(len + strlen(next[(*init)[i]]) + 1 >= size){
+            const int repl_len = strlen(next[(*init)[i]]);
+            while(len + repl_len + 1 >= size){
                 char *new_ptr;
                 size += BUFFER_SIZE, new_ptr = realloc((*final), size);
                 if(!new_ptr){
@@ -60,15 +60,14 @@ void deriv(char **init, int n, char **next, char **final){
                     exit(-1);
                 }
 
-                free((*final));
                 (*final) = new_ptr;
             }
             
-            strcat((*final), next[(*init)[i]]);
+            memcpy((*final) + len, next[(*init)[i]], strlen(next[(*init)[i]]));
+            len += repl_len;
         }
         free((*init));
-        (*init) = strdup((*final));
-        free((*final));
+        (*init) = (*final);
     }
 
     (*final) = strdup((*init));

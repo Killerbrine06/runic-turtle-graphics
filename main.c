@@ -153,7 +153,6 @@ int main(){
                 free(cmd_name);
                 continue;
             }
-            
             perform_lsystem(cmd, &current_state, &undo_stack, &redo_stack);
         }
 
