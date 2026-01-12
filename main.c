@@ -136,7 +136,7 @@ int main(){
             perform_lsystem(cmd, &current_state, &undo_stack, &redo_stack);
         }
 
-        else if(!strcmp(cmd_name, "DERIV")){
+        else if(!strcmp(cmd_name, "DERIVE")){
             char *end;
             int n = strtol(cmd + 6, &end, 10);
 

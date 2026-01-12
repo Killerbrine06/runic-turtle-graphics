@@ -1,5 +1,5 @@
 build:
-	@clang -g *.c -o main
+	@gcc -g *.c -o runic -lm
 
 clean:
-	@rm -f main
+	@rm -f runic
