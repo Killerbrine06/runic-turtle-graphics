@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void get_command_name(char cmd[], char **cmd_name);
-void read_line(char *line, FILE *stream);
+void read_line(char **line, FILE *stream);
 ProgramState init_state();
 void pop(StackNode **stack);
 void clear_stack(StackNode **stack);

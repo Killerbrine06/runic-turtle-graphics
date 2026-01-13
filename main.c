@@ -98,14 +98,13 @@ void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_sta
 }
 
 int main(){
-    char cmd[BUFFER_SIZE];
+    char *cmd = NULL;
     ProgramState current_state = init_state();
     StackNode *undo_stack = NULL, *redo_stack = NULL;
 
     while(1){
-        fgets(cmd, BUFFER_SIZE, stdin);
-        if(cmd[strlen(cmd) - 1] == '\n')
-            cmd[strlen(cmd) - 1] = 0;
+        read_line(&cmd, stdin);
+        // printf("%s\n", cmd);
 
         char *cmd_name;
         get_command_name(cmd, &cmd_name);

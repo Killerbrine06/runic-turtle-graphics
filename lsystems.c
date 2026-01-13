@@ -12,11 +12,11 @@ LSystem load_lsys(char *path_to_file){
         sys.rules_count = -1;
         return sys;
     }
-    sys.axiom = calloc(BUFFER_SIZE, 1);
-    read_line(sys.axiom, lsys_file);
+    // sys.axiom = calloc(BUFFER_SIZE, 1);
+    read_line(&sys.axiom, lsys_file);
 
-    char *line = calloc(BUFFER_SIZE, 1), *end;
-    read_line(line, lsys_file);
+    char *line = NULL, *end;
+    read_line(&line, lsys_file);
 
     sys.rules_count = strtol(line, &end, 10);
     free(line);
@@ -24,8 +24,8 @@ LSystem load_lsys(char *path_to_file){
     sys.rules = calloc(ALFABET_SIZE, sizeof(char*));
 
     for(int i=0; i<sys.rules_count; i++){
-        line = malloc(BUFFER_SIZE);
-        read_line(line, lsys_file);        
+        // line = malloc(BUFFER_SIZE);
+        read_line(&line, lsys_file);        
         sys.rules[line[0]] = malloc(strlen(line) + 1);
         strcpy(sys.rules[line[0]], line + 2);
         free(line);

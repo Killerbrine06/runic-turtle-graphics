@@ -12,7 +12,7 @@ void get_command_name(char cmd[], char **cmd_name){
         (*cmd_name)[cursor] = cmd[cursor], cursor++;
 }
 
-void read_line(char *line, FILE *stream){
+void read_line(char **line, FILE *stream){
     // long cursor = ftell(stream);
     // while(1){
     //     fgets(line, sizeof(line), stream);
@@ -28,9 +28,22 @@ void read_line(char *line, FILE *stream){
     //     }
     // }
 
-    fgets(line, BUFFER_SIZE, stream);
-    if(line[strlen(line) - 1] == '\n')
-        line[strlen(line) - 1] = 0;
+    (*line) = calloc(BUFFER_SIZE, 1);
+    int size = BUFFER_SIZE, len = 0;
+    unsigned char c = 0;
+    while(fscanf(stream, "%c", &c) == 1 && c != '\n' && c != EOF) {
+        if(len + 2 >= size){
+            size += BUFFER_SIZE;
+            char *new_ptr = realloc((*line), size);
+            if(!new_ptr){
+                free((*line));
+                exit(-1);
+            }
+
+            (*line) = new_ptr;
+        }
+        (*line)[len++] = c;
+    }
 }
 
 ProgramState init_state(){
