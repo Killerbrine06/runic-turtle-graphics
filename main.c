@@ -84,7 +84,7 @@ void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_sta
     Image new_img = execute_string(&t, final, current_state->img);
     free(t.stack);
     free(init);
-    free(final);
+    // free(final);
 
     ProgramState new_state = state_dup((*current_state));
     free_img(new_state.img);
@@ -170,7 +170,7 @@ int main(){
             deriv(&init, n, current_state.lsys.rules, &final);
             printf("%s\n", final);
             free(final);
-            free(init);
+            // free(init);
         }
 
         else if(!strcmp(cmd_name, "LOAD")){

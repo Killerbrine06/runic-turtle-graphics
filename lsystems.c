@@ -12,10 +12,10 @@ LSystem load_lsys(char *path_to_file){
         sys.rules_count = -1;
         return sys;
     }
-    sys.axiom = malloc(BUFFER_SIZE);
+    sys.axiom = calloc(BUFFER_SIZE, 1);
     read_line(sys.axiom, lsys_file);
 
-    char *line = malloc(BUFFER_SIZE), *end;
+    char *line = calloc(BUFFER_SIZE, 1), *end;
     read_line(line, lsys_file);
 
     sys.rules_count = strtol(line, &end, 10);
@@ -70,5 +70,5 @@ void deriv(char **init, int n, char **next, char **final){
         (*init) = (*final);
     }
 
-    (*final) = strdup((*init));
+    // (*final) = strdup((*init));
 }
