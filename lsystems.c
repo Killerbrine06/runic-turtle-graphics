@@ -42,12 +42,13 @@ void deriv(char **init, int n, char **next, char **final){
         *final = (*init);
         return;
     }
+    int L = strlen((*init));
     while(n--){
         (*final) = calloc(BUFFER_SIZE, sizeof(char));
         int size = BUFFER_SIZE, len = 0;
         char def_repl[2];
 
-        for(int i=0; i<strlen((*init)); i++){
+        for(int i=0; i<L; i++){
             char *repl;
             if(!next[(*init)[i]]){
                 def_repl[0] = (*init)[i];
@@ -77,6 +78,7 @@ void deriv(char **init, int n, char **next, char **final){
         (*final)[len] = 0;
         free((*init));
         (*init) = (*final);
+        L = len;
     }
 
     (*init) = (*final);
