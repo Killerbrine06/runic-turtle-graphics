@@ -128,7 +128,7 @@ int main(){
                 free_state(&current_state);
                 current_state = state_dup(prev_state);
                 pop(&undo_stack);
-                printf("%s", current_state.last_output);
+                // printf("%s", current_state.last_output);
             }
         }
 

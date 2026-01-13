@@ -57,7 +57,7 @@ void move(Turtle *t, Image *img){
     
     const Pixel p = {t->r, t->g, t->b};
 
-    draw_line(img, (int)x0, (int)y0, (int)x1, (int)y1, p);
+    draw_line(img, (int)lround(x0), (int)lround(y0), (int)lround(x1), (int)lround(y1), p);
     t->x = x1;
     t->y = y1;
 }
