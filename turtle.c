@@ -52,8 +52,14 @@ void move(Turtle *t, Image *img){
     if(x1 >= img->w)
         x1 = (double)(img->w - 1);
     
+    else if (x1 < 0)
+        x1 = (double)0;
+    
     if(y1 >= img->h)
         y1 = (double)(img->h - 1);
+    
+    else if(y1 < 0)
+        y1 = (double)0;
     
     const Pixel p = {t->r, t->g, t->b};
 
