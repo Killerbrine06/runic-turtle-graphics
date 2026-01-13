@@ -39,7 +39,7 @@ LSystem load_lsys(char *path_to_file){
 void deriv(char **init, int n, char **next, char **final){
     free((*final));
     if(!n){
-        *final = strdup((*init));
+        *final = (*init);
         return;
     }
     while(n--){
@@ -79,5 +79,6 @@ void deriv(char **init, int n, char **next, char **final){
         (*init) = (*final);
     }
 
+    (*init) = (*final);
     // (*final) = strdup((*init));
 }
