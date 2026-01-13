@@ -135,6 +135,7 @@ int main(){
         else if(!strcmp(cmd_name, "REDO")){
             if(!redo_stack){
                 printf("Nothing to redo\n");
+                free(cmd);
                 free(cmd_name);
                 continue;
             }
@@ -150,6 +151,7 @@ int main(){
         else if(!strcmp(cmd_name, "LSYSTEM")){
             if(strlen(cmd) < 9){
                 printf("Failed to load %s\n", cmd + 7);
+                free(cmd);
                 free(cmd_name);
                 continue;
             }
@@ -162,6 +164,7 @@ int main(){
 
             if(current_state.lsys.rules_count == -1){
                 printf("No L-system loaded\n");
+                free(cmd);
                 free(cmd_name);
                 continue;
             }
@@ -176,6 +179,7 @@ int main(){
         else if(!strcmp(cmd_name, "LOAD")){
             if(strlen(cmd) < 6){
                 printf("Failed to load\n");
+                free(cmd);
                 free(cmd_name);
                 continue;
             }
@@ -187,6 +191,7 @@ int main(){
         else if(!strcmp(cmd_name, "SAVE")){
             if(current_state.img.w == -1){
                 printf("No image loaded\n");
+                free(cmd);
                 free(cmd_name);
                 continue;
             }
