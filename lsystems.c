@@ -47,10 +47,15 @@ void deriv(char **init, int n, char **next, char **final){
         int size = BUFFER_SIZE, len = 0;
 
         for(int i=0; i<strlen((*init)); i++){
-            if(!next[(*init)[i]])
-                next[(*init)[i]] = malloc(2), next[(*init)[i]][0] = (*init)[i], next[(*init)[i]][1] = 0;
+            char *repl;
+            if(!next[(*init)[i]]){
+                repl = calloc(5, 1);
+                snprintf(repl, 2, "%c", (*init)[i]);
+            }
 
-            const int repl_len = strlen(next[(*init)[i]]);
+            else repl = strdup(next[(*init)[i]]);
+                
+            const int repl_len = strlen(repl);
             while(len + repl_len + 1 >= size){
                 char *new_ptr;
                 size += BUFFER_SIZE, new_ptr = realloc((*final), size);
@@ -61,11 +66,14 @@ void deriv(char **init, int n, char **next, char **final){
                 }
 
                 (*final) = new_ptr;
+                (*final)[len] = 0;
             }
             
-            memcpy((*final) + len, next[(*init)[i]], strlen(next[(*init)[i]]));
+            memcpy((*final) + len, repl, repl_len);
             len += repl_len;
+            free(repl);
         }
+        (*final)[len] = 0;
         free((*init));
         (*init) = (*final);
     }
