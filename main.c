@@ -98,11 +98,11 @@ void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_sta
 }
 
 int main(){
-    char *cmd = NULL;
     ProgramState current_state = init_state();
     StackNode *undo_stack = NULL, *redo_stack = NULL;
-
+    
     while(1){
+        char *cmd = NULL;
         read_line(&cmd, stdin);
         // printf("%s\n", cmd);
 
@@ -202,6 +202,7 @@ int main(){
         }
 
         free(cmd_name);
+        free(cmd);
     }
     return 0;
 }

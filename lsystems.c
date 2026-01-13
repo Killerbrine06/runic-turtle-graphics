@@ -45,15 +45,17 @@ void deriv(char **init, int n, char **next, char **final){
     while(n--){
         (*final) = calloc(BUFFER_SIZE, sizeof(char));
         int size = BUFFER_SIZE, len = 0;
+        char def_repl[2];
 
         for(int i=0; i<strlen((*init)); i++){
             char *repl;
             if(!next[(*init)[i]]){
-                repl = calloc(5, 1);
-                snprintf(repl, 2, "%c", (*init)[i]);
+                def_repl[0] = (*init)[i];
+                def_repl[1] = '\0';
+                repl = def_repl;
             }
 
-            else repl = strdup(next[(*init)[i]]);
+            else repl = next[(*init)[i]];
                 
             const int repl_len = strlen(repl);
             while(len + repl_len + 1 >= size){
@@ -71,7 +73,6 @@ void deriv(char **init, int n, char **next, char **final){
             
             memcpy((*final) + len, repl, repl_len);
             len += repl_len;
-            free(repl);
         }
         (*final)[len] = 0;
         free((*init));
