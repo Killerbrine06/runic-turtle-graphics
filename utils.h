@@ -15,9 +15,11 @@ ProgramState get_head(StackNode *stack);
 ProgramState state_dup(ProgramState state);
 LSystem sys_dup(LSystem lsys);
 Image img_dup(Image img);
+Font* font_dup(Font *f);
 void free_lsys(LSystem sys);
 void free_state(ProgramState *state);
 void free_img(Image img);
+void free_font(Font *f);
 void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state);
 void get_turtle_args(Turtle *t, char *cmd);
 

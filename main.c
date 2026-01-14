@@ -6,6 +6,7 @@
 #include "lsystems.h"
 #include "image.h"
 #include "turtle.h"
+#include "fonts.h"
 
 void perform_load(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack){
     char *path_to_file = malloc(strlen(cmd));
@@ -97,6 +98,35 @@ void perform_turtle(char *cmd, ProgramState *current_state, StackNode **undo_sta
     printf("Drawing done\n");
 }
 
+void perform_derive(char *cmd, ProgramState *current_state){
+    char *end;
+    int n = strtol(cmd + 6, &end, 10);
+
+    if(current_state->lsys.rules_count == -1){
+        printf("No L-system loaded\n");
+        return;
+    }
+    char *final = calloc(BUFFER_SIZE, sizeof(char));
+    char *init = strdup(current_state->lsys.axiom);
+    deriv(&init, n, current_state->lsys.rules, &final);
+    printf("%s\n", final);
+    free(final);
+    // free(init);
+}
+
+void perform_save(char *cmd, ProgramState *current_state){
+    if(current_state->img.w == -1){
+        printf("No image loaded\n");
+        return;
+    }
+
+    char *path_to_file = malloc(strlen(cmd));
+    strcpy(path_to_file, cmd + 5);
+    save_image(current_state->img, path_to_file);
+    printf("Saved %s\n", path_to_file);
+    free(path_to_file);
+}
+
 int main(){
     ProgramState current_state = init_state();
     StackNode *undo_stack = NULL, *redo_stack = NULL;
@@ -159,21 +189,7 @@ int main(){
         }
 
         else if(!strcmp(cmd_name, "DERIVE")){
-            char *end;
-            int n = strtol(cmd + 6, &end, 10);
-
-            if(current_state.lsys.rules_count == -1){
-                printf("No L-system loaded\n");
-                free(cmd);
-                free(cmd_name);
-                continue;
-            }
-            char *final = calloc(BUFFER_SIZE, sizeof(char));
-            char *init = strdup(current_state.lsys.axiom);
-            deriv(&init, n, current_state.lsys.rules, &final);
-            printf("%s\n", final);
-            free(final);
-            // free(init);
+            perform_derive(cmd, &current_state);
         }
 
         else if(!strcmp(cmd_name, "LOAD")){
@@ -189,22 +205,45 @@ int main(){
         }
 
         else if(!strcmp(cmd_name, "SAVE")){
-            if(current_state.img.w == -1){
-                printf("No image loaded\n");
-                free(cmd);
-                free(cmd_name);
-                continue;
-            }
-
-            char *path_to_file = malloc(strlen(cmd));
-            strcpy(path_to_file, cmd + 5);
-            save_image(current_state.img, path_to_file);
-            printf("Saved %s\n", path_to_file);
-            free(path_to_file);
+            perform_save(cmd, &current_state);
         }
         
         else if(!strcmp(cmd_name, "TURTLE")){
             perform_turtle(cmd, &current_state, &undo_stack, &redo_stack);
+        }
+
+        else if(!strcmp(cmd_name, "FONT")){
+            char *path_to_file = strdup(cmd + 5);
+            if(!path_to_file){
+                printf("Failed to allocate memory in func main\n");
+                free(cmd_name);
+                free(cmd);
+                continue;
+            }
+            char *name;
+            Font *new_font = load_font(path_to_file, &name);
+            
+            if(!new_font){
+                printf("Failed to load %s\n", path_to_file);
+                free(cmd_name);
+                free(cmd);
+                continue;
+            }
+
+            ProgramState new_state = state_dup(current_state);
+            free_font(new_state.fonts);
+            new_state.fonts = font_dup(new_font);
+            free_font(new_font);
+            new_state.font_name = name;
+
+            int len = snprintf(NULL, 0, "Loaded %s (bitmap font %s)\n", path_to_file, name);
+            free(new_state.last_output);
+            new_state.last_output = malloc(len + 5);
+            snprintf(new_state.last_output, len + 1, "Loaded %s (bitmap font %s)\n", path_to_file, new_state.font_name);
+
+            update_state(&undo_stack, &redo_stack, &current_state, &new_state);
+            printf("Loaded %s (bitmap font %s)\n", path_to_file, current_state.font_name);
+            printf("%d %d %d\n", current_state.fonts['A'].h, current_state.fonts['A'].w, current_state.fonts['A'].map[0]);
         }
 
         free(cmd_name);

@@ -13,21 +13,6 @@ void get_command_name(char cmd[], char **cmd_name){
 }
 
 void read_line(char **line, FILE *stream){
-    // long cursor = ftell(stream);
-    // while(1){
-    //     fgets(line, sizeof(line), stream);
-    //     if(line[strlen(line) - 1] != '\n'){
-    //         fseek(stream, SEEK_SET, cursor);
-    //         const int size = sizeof(line);
-    //         free(line);
-    //         line = malloc(size + BUFFER_SIZE);
-    //     }
-    //     else {
-    //         line[strlen(line) - 1] = 0;
-    //         break;
-    //     }
-    // }
-
     (*line) = calloc(BUFFER_SIZE, 1);
     int size = BUFFER_SIZE, len = 0;
     unsigned char c = 0;
@@ -56,10 +41,12 @@ ProgramState init_state(){
     img.w = -1;
     
     ProgramState state;
-    state.last_output = malloc(2);
-    strcpy(state.last_output, "\0");
+    state.last_output = strdup("\0");
+    state.font_name = NULL;
+
     state.img = img;
     state.lsys = l;
+    state.fonts = NULL;
 
     return state;
 }
@@ -142,8 +129,38 @@ ProgramState state_dup(ProgramState state){
     new_state.lsys = sys_dup(state.lsys);
     new_state.img = img_dup(state.img);
     new_state.last_output = strdup(state.last_output);
+    if(state.font_name)
+        new_state.font_name = strdup(state.font_name);
+    else new_state.font_name = NULL;
+    
+    new_state.fonts = font_dup(state.fonts);
 
     return new_state;
+}
+
+Font* font_dup(Font *f){
+    Font *new = NULL;
+    if(!f)
+        return new;
+
+    new = calloc(BUFFER_SIZE, sizeof(Font));
+    for(int i=0; i<BUFFER_SIZE; i++){
+        if(!f[i].map)
+            continue;
+
+        new[i].dwx = f[i].dwx;
+        new[i].dwy = f[i].dwy;
+        new[i].h = f[i].h;
+        new[i].w = f[i].w;
+        new[i].x_off = f[i].x_off;
+        new[i].y_off = f[i].y_off;
+
+        new[i].map = malloc(new[i].h * sizeof(int));
+        for(int j=0; j<new[i].h; j++)
+            new[i].map[j] = f[i].map[j];
+    }
+
+    return new;
 }
 
 Image img_dup(Image img){
@@ -191,10 +208,28 @@ void free_img(Image img){
     free(img.data);
 }
 
+void free_font(Font *f){
+    if(!f)
+        return;
+
+    for(int i=0; i<BUFFER_SIZE; i++){
+        if(!f[i].map)
+            continue;
+        
+        free(f[i].map);
+    }
+
+    free(f);
+}
+
 void free_state(ProgramState *state){
     free_lsys(state->lsys);
     free_img(state->img);
+    free_font(state->fonts);
     free(state->last_output);
+
+    if(state->font_name)
+        free(state->font_name);
 }
 
 void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state){

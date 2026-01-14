@@ -16,10 +16,15 @@ typedef struct {
 } Image;
 
 typedef struct {
-    char *last_output;
+    int dwx, dwy, w, h, x_off, y_off;
+    int *map;
+} Font;
+
+typedef struct {
+    char *last_output, *font_name;
     Image img;
     LSystem lsys;
-    // Font *font;
+    Font *fonts;
 } ProgramState;
 
 typedef struct StackNode {
