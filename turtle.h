@@ -3,6 +3,6 @@
 
 #include "structs.h"
 
-Image execute_string(Turtle *t, char *s, Image img);
+image execute_string(turtle *t, char *s, image img);
 
 #endif

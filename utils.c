@@ -36,17 +36,17 @@ void read_line(char **line, FILE *stream)
 	(*line)[len] = '\0';
 }
 
-ProgramState init_state()
+programstate init_state()
 {
-	LSystem l;
+	lsystem l;
 	l.axiom = NULL;
 	l.rules = NULL;
 	l.rules_count = -1;
-	Image img;
+	image img;
 	img.data = NULL;
 	img.w = -1;
 
-	ProgramState state;
+	programstate state;
 	state.last_output = strdup("\0");
 	state.font_name = NULL;
 
@@ -57,13 +57,13 @@ ProgramState init_state()
 	return state;
 }
 
-void clear_stack(StackNode **stack)
+void clear_stack(stacknode **stack)
 {
 	while ((*stack))
 		pop(stack);
 }
 
-void pop(StackNode **stack)
+void pop(stacknode **stack)
 {
 	if (!(*stack))
 		return;
@@ -75,7 +75,7 @@ void pop(StackNode **stack)
 		return;
 	}
 
-	StackNode *node = (*stack);
+	stacknode *node = (*stack);
 	while (node->next->next)
 		node = node->next;
 
@@ -85,39 +85,39 @@ void pop(StackNode **stack)
 	node->next = NULL;
 }
 
-ProgramState get_head(StackNode *stack)
+programstate get_head(stacknode *stack)
 {
-	StackNode *node = stack;
+	stacknode *node = stack;
 	while (node->next)
 		node = node->next;
 
 	return node->state;
 }
 
-void push(StackNode **stack, ProgramState state)
+void push(stacknode **stack, programstate state)
 {
 	if (!(*stack)) {
-		StackNode *new_node = malloc(sizeof(StackNode));
+		stacknode *new_node = malloc(sizeof(stacknode));
 		new_node->next = NULL;
 		new_node->state = state;
 		*stack = new_node;
 		return;
 	}
 
-	StackNode *node = (*stack);
+	stacknode *node = (*stack);
 
 	while (node->next)
 		node = node->next;
 
-	StackNode *new_node = malloc(sizeof(StackNode));
+	stacknode *new_node = malloc(sizeof(stacknode));
 	new_node->next = NULL;
 	new_node->state = state;
 	node->next = new_node;
 }
 
-LSystem sys_dup(LSystem lsys)
+lsystem sys_dup(lsystem lsys)
 {
-	LSystem new_lsys;
+	lsystem new_lsys;
 	new_lsys.rules_count = lsys.rules_count;
 
 	if (lsys.axiom)
@@ -136,9 +136,9 @@ LSystem sys_dup(LSystem lsys)
 	return new_lsys;
 }
 
-ProgramState state_dup(ProgramState state)
+programstate state_dup(programstate state)
 {
-	ProgramState new_state;
+	programstate new_state;
 	new_state.lsys = sys_dup(state.lsys);
 	new_state.img = img_dup(state.img);
 	new_state.last_output = strdup(state.last_output);
@@ -153,13 +153,13 @@ ProgramState state_dup(ProgramState state)
 	return new_state;
 }
 
-Font *font_dup(Font *f, int size)
+font *font_dup(font *f, int size)
 {
-	Font *new = NULL;
+	font *new = NULL;
 	if (!f)
 		return new;
 
-	new = calloc(size, sizeof(Font));
+	new = calloc(size, sizeof(font));
 	for (int i = 0; i < size; i++) {
 		if (!f[i].map)
 			continue;
@@ -179,9 +179,9 @@ Font *font_dup(Font *f, int size)
 	return new;
 }
 
-Image img_dup(Image img)
+image img_dup(image img)
 {
-	Image new_img;
+	image new_img;
 	new_img.w = img.w;
 	new_img.h = img.h;
 
@@ -190,18 +190,18 @@ Image img_dup(Image img)
 		return new_img;
 	}
 
-	new_img.data = malloc(img.h * sizeof(Pixel *));
+	new_img.data = malloc(img.h * sizeof(pixel *));
 	for (int i = 0; i < img.h; i++) {
 		if (img.data[i]) {
-			new_img.data[i] = malloc(img.w * sizeof(Pixel));
-			memcpy(new_img.data[i], img.data[i], img.w * sizeof(Pixel));
+			new_img.data[i] = malloc(img.w * sizeof(pixel));
+			memcpy(new_img.data[i], img.data[i], img.w * sizeof(pixel));
 		}
 	}
 
 	return new_img;
 }
 
-void free_lsys(LSystem sys)
+void free_lsys(lsystem sys)
 {
 	if (sys.axiom)
 		free(sys.axiom);
@@ -215,7 +215,7 @@ void free_lsys(LSystem sys)
 	}
 }
 
-void free_img(Image img)
+void free_img(image img)
 {
 	if (!img.data)
 		return;
@@ -227,7 +227,7 @@ void free_img(Image img)
 	free(img.data);
 }
 
-void free_font(Font *f, int size)
+void free_font(font *f, int size)
 {
 	if (!f)
 		return;
@@ -242,7 +242,7 @@ void free_font(Font *f, int size)
 	free(f);
 }
 
-void free_state(ProgramState *state)
+void free_state(programstate *state)
 {
 	free_lsys(state->lsys);
 	free_img(state->img);
@@ -253,8 +253,8 @@ void free_state(ProgramState *state)
 		free(state->font_name);
 }
 
-void update_state(StackNode **undo_stack, StackNode **redo_stack,
-				  ProgramState *current_state, ProgramState *new_state)
+void update_state(stacknode **undo_stack, stacknode **redo_stack,
+				  programstate *current_state, programstate *new_state)
 {
 	clear_stack(redo_stack);
 	push(undo_stack, state_dup((*current_state)));
@@ -264,7 +264,7 @@ void update_state(StackNode **undo_stack, StackNode **redo_stack,
 	free_state(new_state);
 }
 
-void get_turtle_args(Turtle *t, char *cmd)
+void get_turtle_args(turtle *t, char *cmd)
 {
 	char *cuv = strtok(cmd, " "), *end;
 	t->x = strtold(cuv, &end);
@@ -290,7 +290,7 @@ void get_turtle_args(Turtle *t, char *cmd)
 }
 
 void get_type_args(char *cmd, char **text, int *start_x, int *start_y,
-				   Pixel *color)
+				   pixel *color)
 {
 	char *cursor = cmd + 6;
 

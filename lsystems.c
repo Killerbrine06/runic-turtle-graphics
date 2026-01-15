@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-LSystem load_lsys(char *path_to_file)
+lsystem load_lsys(char *path_to_file)
 {
-	LSystem sys;
+	lsystem sys;
 	FILE *lsys_file = fopen(path_to_file, "r");
 
 	if (!lsys_file) {

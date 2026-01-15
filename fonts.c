@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-Font *load_font(char *path_to_file, char **name, int *list_size)
+font *load_font(char *path_to_file, char **name, int *list_size)
 {
 	FILE *file = fopen(path_to_file, "r");
-	Font *font_list = NULL;
+	font *font_list = NULL;
 	if (!file)
 		return font_list;
 
@@ -41,7 +41,7 @@ Font *load_font(char *path_to_file, char **name, int *list_size)
 	if (ok != 2)
 		return font_list;
 
-	font_list = calloc(BUFFER_SIZE, sizeof(Font));
+	font_list = calloc(BUFFER_SIZE, sizeof(font));
 	int size = BUFFER_SIZE;
 
 	for (int i = 0; i < cnt; i++) {
@@ -67,11 +67,11 @@ Font *load_font(char *path_to_file, char **name, int *list_size)
 					n_size += BUFFER_SIZE;
 
 				if (n_size != size) {
-					font_list = realloc(font_list, n_size * sizeof(Font));
+					font_list = realloc(font_list, n_size * sizeof(font));
 					if(!font_list)
 						return font_list;
 					
-					memset(font_list + size, 0, (n_size - size) * sizeof(Font));
+					memset(font_list + size, 0, (n_size - size) * sizeof(font));
 					size = n_size;
 				}
 			}
@@ -117,7 +117,7 @@ Font *load_font(char *path_to_file, char **name, int *list_size)
 	return font_list;
 }
 
-void draw(int x, int y, char **m, int w, int h, Pixel *color, Image *img)
+void draw(int x, int y, char **m, int w, int h, pixel *color, image *img)
 {
 	if (!(0 <= x && x < img->w && 0 <= y && y < img->h))
 		return;
@@ -130,7 +130,7 @@ void draw(int x, int y, char **m, int w, int h, Pixel *color, Image *img)
 	}
 }
 
-char **char_matrix(Font *f)
+char **char_matrix(font *f)
 {
 	const int padding = ((f->w + 7) / 8) * 8 - f->w;
 	char **m = calloc(f->h, sizeof(char *));
@@ -157,8 +157,8 @@ char **char_matrix(Font *f)
 	return m;
 }
 
-void type_text(char *text, int start_x, int start_y, Pixel *color,
-			   ProgramState *state)
+void type_text(char *text, int start_x, int start_y, pixel *color,
+			   programstate *state)
 {
 	const int L = strlen(text);
 	for (int i = 0; i < L; i++) {

@@ -4,18 +4,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-Image load_image(char *path_to_file)
+image load_image(char *path_to_file)
 {
 	FILE *file = fopen(path_to_file, "rb");
 
 	if (!file) {
 		printf("Failed to load %s\n", path_to_file);
-		Image img;
+		image img;
 		img.w = -1;
 		return img;
 	}
 
-	Image img;
+	image img;
 	char magic[3];
 	int max_val;
 	fscanf(file, "%s", magic);
@@ -23,9 +23,9 @@ Image load_image(char *path_to_file)
 	fscanf(file, "%d", &max_val);
 	fgetc(file);
 
-	img.data = malloc(img.h * sizeof(Pixel *));
+	img.data = malloc(img.h * sizeof(pixel *));
 	for (int i = img.h - 1; i >= 0; i--) {
-		img.data[i] = calloc(img.w, sizeof(Pixel));
+		img.data[i] = calloc(img.w, sizeof(pixel));
 
 		for (int j = 0; j < img.w; j++) {
 			fread(&img.data[i][j].r, 1, 1, file);
@@ -38,7 +38,7 @@ Image load_image(char *path_to_file)
 	return img;
 }
 
-void save_image(Image img, char *path_to_file)
+void save_image(image img, char *path_to_file)
 {
 	FILE *file = fopen(path_to_file, "wb");
 	fprintf(file, "P6\n%d %d\n255\n", img.w, img.h);

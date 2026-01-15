@@ -5,18 +5,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-void append_to_stack(Turtle *t)
+void append_to_stack(turtle *t)
 {
 	if (t->s_len + 1 >= t->s_size)
 		t->s_size += TURTLE_STACK_DEF_SIZE,
-			t->stack = realloc(t->stack, t->s_size * sizeof(TurtleStack));
+			t->stack = realloc(t->stack, t->s_size * sizeof(turtlestack));
 
 	t->stack[t->s_len].x = t->x;
 	t->stack[t->s_len].y = t->y;
 	t->stack[t->s_len++].teta = t->teta;
 }
 
-void pop_stack(Turtle *t)
+void pop_stack(turtle *t)
 {
 	t->x = t->stack[t->s_len - 1].x;
 	t->y = t->stack[t->s_len - 1].y;
@@ -24,7 +24,7 @@ void pop_stack(Turtle *t)
 	t->s_len--;
 }
 
-void draw_line(Image *img, int x0, int y0, int x1, int y1, Pixel p)
+void draw_line(image *img, int x0, int y0, int x1, int y1, pixel p)
 {
 	int dx = abs(x1 - x0);
 	int sx = (x0 < x1 ? 1 : -1);
@@ -49,7 +49,7 @@ void draw_line(Image *img, int x0, int y0, int x1, int y1, Pixel p)
 	}
 }
 
-void move(Turtle *t, Image *img)
+void move(turtle *t, image *img)
 {
 	double x0 = t->x, y0 = t->y;
 	double x1 = x0 + t->d * cos(t->teta * M_PI / 180.0);
@@ -67,7 +67,7 @@ void move(Turtle *t, Image *img)
 	// else if(y1 < 0)
 	// y1 = (double)0;
 
-	const Pixel p = {t->r, t->g, t->b};
+	const pixel p = {t->r, t->g, t->b};
 
 	draw_line(img, (int)lround(x0), (int)lround(y0), (int)lround(x1),
 			  (int)lround(y1), p);
@@ -75,12 +75,12 @@ void move(Turtle *t, Image *img)
 	t->y = y1;
 }
 
-Image execute_string(Turtle *t, char *s, const Image img)
+image execute_string(turtle *t, char *s, const image img)
 {
-	Image new_img = img_dup(img);
+	image new_img = img_dup(img);
 	t->s_len = 0;
 	t->s_size = TURTLE_STACK_DEF_SIZE;
-	t->stack = malloc(t->s_size * sizeof(TurtleStack));
+	t->stack = malloc(t->s_size * sizeof(turtlestack));
 	const int len = strlen(s);
 	for (int i = 0; i < len; i++) {
 		switch (s[i]) {

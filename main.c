@@ -8,13 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void perform_load(char *cmd, ProgramState *current_state,
-				  StackNode **undo_stack, StackNode **redo_stack)
+void perform_load(char *cmd, programstate *current_state,
+				  stacknode **undo_stack, stacknode **redo_stack)
 {
 	char *path_to_file = malloc(strlen(cmd));
 	strcpy(path_to_file, cmd + 5);
 
-	Image new_img = load_image(path_to_file);
+	image new_img = load_image(path_to_file);
 	if (new_img.w == -1) {
 		// free(cmd_name);
 		free(path_to_file);
@@ -23,7 +23,7 @@ void perform_load(char *cmd, ProgramState *current_state,
 
 	printf("Loaded %s (PPM image %dx%d)\n", path_to_file, new_img.w, new_img.h);
 
-	ProgramState new_state = state_dup((*current_state));
+	programstate new_state = state_dup((*current_state));
 	free_img(new_state.img);
 	new_state.img = img_dup(new_img);
 
@@ -40,12 +40,12 @@ void perform_load(char *cmd, ProgramState *current_state,
 	free(path_to_file);
 }
 
-void perform_lsystem(char *cmd, ProgramState *current_state,
-					 StackNode **undo_stack, StackNode **redo_stack)
+void perform_lsystem(char *cmd, programstate *current_state,
+					 stacknode **undo_stack, stacknode **redo_stack)
 {
 	char *path_to_file = malloc(strlen(cmd));
 	strcpy(path_to_file, cmd + 8);
-	LSystem new_lsys = load_lsys(path_to_file);
+	lsystem new_lsys = load_lsys(path_to_file);
 
 	if (new_lsys.rules_count == -1)
 		printf("Failed to load %s\n", path_to_file), new_lsys.axiom = NULL;
@@ -54,7 +54,7 @@ void perform_lsystem(char *cmd, ProgramState *current_state,
 		printf("Loaded %s (L-system with %d rules)\n", path_to_file,
 			   new_lsys.rules_count);
 
-		ProgramState new_state = state_dup((*current_state));
+		programstate new_state = state_dup((*current_state));
 		free_lsys(new_state.lsys);
 		new_state.lsys = sys_dup(new_lsys);
 
@@ -73,8 +73,8 @@ void perform_lsystem(char *cmd, ProgramState *current_state,
 	free(path_to_file);
 }
 
-void perform_turtle(char *cmd, ProgramState *current_state,
-					StackNode **undo_stack, StackNode **redo_stack)
+void perform_turtle(char *cmd, programstate *current_state,
+					stacknode **undo_stack, stacknode **redo_stack)
 {
 	if (current_state->img.w == -1) {
 		printf("No image loaded\n");
@@ -86,19 +86,19 @@ void perform_turtle(char *cmd, ProgramState *current_state,
 		return;
 	}
 
-	Turtle t;
+	turtle t;
 	t.stack = NULL;
 	get_turtle_args(&t, cmd + 7);
 	char *final = calloc(BUFFER_SIZE, sizeof(char));
 	char *init = strdup(current_state->lsys.axiom);
 	deriv(&init, t.n, current_state->lsys.rules, &final);
 	// printf("%d %s\n", t.n, final);
-	Image new_img = execute_string(&t, final, current_state->img);
+	image new_img = execute_string(&t, final, current_state->img);
 	free(t.stack);
 	free(init);
 	// free(final);
 
-	ProgramState new_state = state_dup((*current_state));
+	programstate new_state = state_dup((*current_state));
 	free_img(new_state.img);
 	new_state.img = img_dup(new_img);
 	free(new_state.last_output);
@@ -109,7 +109,7 @@ void perform_turtle(char *cmd, ProgramState *current_state,
 	printf("Drawing done\n");
 }
 
-void perform_derive(char *cmd, ProgramState *current_state)
+void perform_derive(char *cmd, programstate *current_state)
 {
 	char *end;
 	int n = strtol(cmd + 6, &end, 10);
@@ -126,7 +126,7 @@ void perform_derive(char *cmd, ProgramState *current_state)
 	// free(init);
 }
 
-void perform_save(char *cmd, ProgramState *current_state)
+void perform_save(char *cmd, programstate *current_state)
 {
 	if (current_state->img.w == -1) {
 		printf("No image loaded\n");
@@ -140,8 +140,8 @@ void perform_save(char *cmd, ProgramState *current_state)
 	free(path_to_file);
 }
 
-void perform_font(char *cmd, ProgramState *current_state,
-				  StackNode **undo_stack, StackNode **redo_stack)
+void perform_font(char *cmd, programstate *current_state,
+				  stacknode **undo_stack, stacknode **redo_stack)
 {
 	char *path_to_file = strdup(cmd + 5);
 	if (!path_to_file) {
@@ -151,7 +151,7 @@ void perform_font(char *cmd, ProgramState *current_state,
 
 	char *name;
 	int new_size;
-	Font *new_font = load_font(path_to_file, &name, &new_size);
+	font *new_font = load_font(path_to_file, &name, &new_size);
 
 	if (!new_font) {
 		printf("Failed to load %s\n", path_to_file);
@@ -159,7 +159,7 @@ void perform_font(char *cmd, ProgramState *current_state,
 		return;
 	}
 
-	ProgramState new_state = state_dup((*current_state));
+	programstate new_state = state_dup((*current_state));
 	free_font(new_state.fonts, new_state.fonts_size);
 	new_state.fonts = font_dup(new_font, new_size);
 	new_state.fonts_size = new_size;
@@ -182,8 +182,8 @@ void perform_font(char *cmd, ProgramState *current_state,
 	free(path_to_file);
 }
 
-void perform_type(char *cmd, ProgramState *current_state,
-				  StackNode **undo_stack, StackNode **redo_stack)
+void perform_type(char *cmd, programstate *current_state,
+				  stacknode **undo_stack, stacknode **redo_stack)
 {
 	if (current_state->img.w == -1) {
 		printf("No image loaded\n");
@@ -197,9 +197,9 @@ void perform_type(char *cmd, ProgramState *current_state,
 
 	int start_x, start_y;
 	char *text;
-	Pixel color;
+	pixel color;
 	get_type_args(cmd, &text, &start_x, &start_y, &color);
-	ProgramState new_state = state_dup((*current_state));
+	programstate new_state = state_dup((*current_state));
 	type_text(text, start_x, start_y, &color, &new_state);
 
 	int len = snprintf(NULL, 0, "Text written\n");
@@ -215,8 +215,8 @@ void perform_type(char *cmd, ProgramState *current_state,
 
 int main()
 {
-	ProgramState current_state = init_state();
-	StackNode *undo_stack = NULL, *redo_stack = NULL;
+	programstate current_state = init_state();
+	stacknode *undo_stack = NULL, *redo_stack = NULL;
 
 	while (1) {
 		char *cmd = NULL;
@@ -239,7 +239,7 @@ int main()
 				printf("Nothing to undo\n");
 
 			else {
-				ProgramState prev_state = get_head(undo_stack);
+				programstate prev_state = get_head(undo_stack);
 				push(&redo_stack, state_dup(current_state));
 				free_state(&current_state);
 				current_state = state_dup(prev_state);
@@ -256,7 +256,7 @@ int main()
 				continue;
 			}
 
-			ProgramState next_state = get_head(redo_stack);
+			programstate next_state = get_head(redo_stack);
 			push(&undo_stack, state_dup(current_state));
 			free_state(&current_state);
 			current_state = state_dup(next_state);
