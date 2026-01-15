@@ -55,8 +55,7 @@ font *load_font(char *path_to_file, char **name, int *list_size)
 			if (strstr(line, "ENDCHAR")) {
 				free(line);
 				break;
-			}
-			else if (strstr(line, "ENCODING")) {
+			} else if (strstr(line, "ENCODING")) {
 				char *end;
 				enc = strtol(line + 9, &end, 10);
 				if (enc < 0)

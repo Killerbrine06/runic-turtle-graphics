@@ -12,3 +12,5 @@ Structura proiectului este data de obiectul cu care lucrez. Astfel pentru lucrul
 Gestionarea snapshoturilor se face prin liste inlantuite alocate dinamic.
 
 In bucla principala se citeste comanda introdusa, apoi se extrage numele comenzii si se executa comanda cu argumentele date.
+
+Precizia pentru desenare(comanda turtle) este obtinuta prin folosirea tipului double si a functiei lround atunci cand se face translatia la coordonate intregi.
