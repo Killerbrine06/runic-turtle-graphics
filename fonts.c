@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void check_header(char **name, FILE *file, int *cnt, int *ok){
+void check_header(char **name, FILE *file, int *cnt, int *ok)
+{
 	while (1) {
 		char *line;
 		read_line(&line, file);
@@ -41,31 +42,25 @@ font *load_font(char *path_to_file, char **name, int *list_size)
 
 	int cnt = 0, ok = 0;
 	check_header(name, file, &cnt, &ok);
-
 	if (ok != 2)
 		return font_list;
 
 	font_list = calloc(BUFFER_SIZE, sizeof(font));
 	int size = BUFFER_SIZE;
-
 	for (int i = 0; i < cnt; i++) {
 		int enc = 0;
 		while (1) {
 			char *line;
 			read_line(&line, file);
-
 			if (strstr(line, "ENDCHAR")) {
 				free(line);
 				break;
 			}
-
 			else if (strstr(line, "ENCODING")) {
 				char *end;
 				enc = strtol(line + 9, &end, 10);
-
 				if (enc < 0)
 					enc = 0;
-
 				int n_size = size;
 				while (enc >= n_size)
 					n_size += BUFFER_SIZE;

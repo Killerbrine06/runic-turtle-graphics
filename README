@@ -10,3 +10,5 @@ Fiecare fisier dependinta(.bdf, .ppm etc) sunt parcurse conform formatului descr
 Structura proiectului este data de obiectul cu care lucrez. Astfel pentru lucrul cu imagini este image.c/.h, pentru fonturi fonts.c/.h samd.
 
 Gestionarea snapshoturilor se face prin liste inlantuite alocate dinamic.
+
+In bucla principala se citeste comanda introdusa, apoi se extrage numele comenzii si se executa comanda cu argumentele date.
