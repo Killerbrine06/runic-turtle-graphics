@@ -1,0 +1,26 @@
+{
+  // Auto Save
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 750,
+
+  // Tabs: real tabs, visual width 4
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": false,
+  "editor.tabSize": 4,
+  "[c]":   { "editor.insertSpaces": false, "editor.detectIndentation": false, "editor.tabSize": 4 },
+  "[cpp]": { "editor.insertSpaces": false, "editor.detectIndentation": false, "editor.tabSize": 4 },
+
+  // Pick ONE formatter stack:
+
+  // Option A: Microsoft C/C++ extension
+  "editor.defaultFormatter": "ms-vscode.cpptools",
+  "C_Cpp.formatting": "clangFormat",
+  "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, BreakBeforeBraces: Linux, UseTab: Always, IndentWidth: 4, TabWidth: 4, ContinuationIndentWidth: 4, AllowShortIfStatementsOnASingleLine: false }",
+  "C_Cpp.clang_format_fallbackStyle": "none"
+
+  // Option B: clangd extension (use instead of Option A)
+  // "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+  // "clangd.arguments": [
+  //   "--fallback-style={BasedOnStyle: LLVM, BreakBeforeBraces: Linux, UseTab: Always, IndentWidth: 4, TabWidth: 4, ContinuationIndentWidth: 4, AllowShortIfStatementsOnASingleLine: false}"
+  // ]
+}

@@ -4,178 +4,187 @@
 #include <stdlib.h>
 #include <string.h>
 
-Font* load_font(char *path_to_file, char **name, int *list_size){
-    FILE *file = fopen(path_to_file, "r");
-    Font *font_list = NULL;
-    if(!file)
-        return font_list;
+Font *load_font(char *path_to_file, char **name, int *list_size)
+{
+	FILE *file = fopen(path_to_file, "r");
+	Font *font_list = NULL;
+	if (!file)
+		return font_list;
 
-    int cnt = 0, ok = 0;
-    while(1){
-        char *line;
-        read_line(&line, file);
-        
-        if(!strcmp(line, "ENDFONT")){
-            free(line);
-            break;
-        }
+	int cnt = 0, ok = 0;
+	while (1) {
+		char *line;
+		read_line(&line, file);
 
-        else if(_strnstr(line, "FONT ", 6)){
-            (*name) = calloc(strlen(line) + 1, 1);
-            strcpy((*name), line + 5);
-            ok++;
-        }
+		if (!strcmp(line, "ENDFONT")) {
+			free(line);
+			break;
+		}
 
-        else if(strstr(line, "CHARS ")){
-            char *end;
-            cnt = strtol(line + 6, &end, 10);
-            free(line);
-            ok++;
-            break;
-        }
+		else if (_strnstr(line, "FONT ", 6)) {
+			(*name) = calloc(strlen(line) + 1, 1);
+			strcpy((*name), line + 5);
+			ok++;
+		}
 
-        free(line);
-    }
+		else if (strstr(line, "CHARS ")) {
+			char *end;
+			cnt = strtol(line + 6, &end, 10);
+			free(line);
+			ok++;
+			break;
+		}
 
-    if(ok != 2)
-        return font_list;
-    
-    font_list = calloc(BUFFER_SIZE, sizeof(Font));
-    int size = BUFFER_SIZE;
+		free(line);
+	}
 
-    for(int i=0; i<cnt; i++){
-        int enc = 0;
-        while(1){
-            char *line;
-            read_line(&line, file);
+	if (ok != 2)
+		return font_list;
 
-            if(strstr(line, "ENDCHAR")){
-                free(line);
-                break;
-            }
+	font_list = calloc(BUFFER_SIZE, sizeof(Font));
+	int size = BUFFER_SIZE;
 
-            else if(strstr(line, "ENCODING")){
-                char *end;
-                enc = strtol(line + 9, &end, 10);
+	for (int i = 0; i < cnt; i++) {
+		int enc = 0;
+		while (1) {
+			char *line;
+			read_line(&line, file);
 
-                if(enc < 0)
-                    enc = 0;
+			if (strstr(line, "ENDCHAR")) {
+				free(line);
+				break;
+			}
 
-                int n_size = size;
-                while(enc >= n_size)
-                    n_size += BUFFER_SIZE;
-                
-                if(n_size != size){
-                    font_list = realloc(font_list, n_size * sizeof(Font));
-                    for(int j=size; j<n_size; j++)
-                        font_list[enc].map = NULL;
-                }
-            }
+			else if (strstr(line, "ENCODING")) {
+				char *end;
+				enc = strtol(line + 9, &end, 10);
 
-            else if(strstr(line, "DWIDTH")){
-                char *end, *cursor = line;
-                font_list[enc].dwx = strtol(cursor + 7, &end, 10);
-                cursor = end;
-                font_list[enc].dwy = strtol(cursor + 1, &end, 10);
-            }
+				if (enc < 0)
+					enc = 0;
 
-            else if(strstr(line, "BBX")){
-                char *end, *cursor = line;
-                font_list[enc].w = strtol(cursor + 4, &end, 10);
-                cursor = end;
-                font_list[enc].h = strtol(cursor + 1, &end, 10);
-                cursor = end;
-                font_list[enc].x_off = strtol(cursor + 1, &end, 10);
-                cursor = end;
-                font_list[enc].y_off = strtol(cursor + 1, &end, 10);
+				int n_size = size;
+				while (enc >= n_size)
+					n_size += BUFFER_SIZE;
 
-                font_list[enc].map = calloc(font_list[enc].h, sizeof(int));
-            }
+				if (n_size != size) {
+					font_list = realloc(font_list, n_size * sizeof(Font));
+					for (int j = size; j < n_size; j++)
+						font_list[enc].map = NULL;
 
-            else if(strstr(line, "BITMAP")){
-                for(int i=0; i<font_list[enc].h; i++){
-                    free(line);
-                    read_line(&line, file);
-                    char *end;
-                    font_list[enc].map[i] = strtol(line, &end, 16);
-                }
-            }
+					size = n_size;
+				}
+			}
 
-            free(line);
-        }
-    }
+			else if (strstr(line, "DWIDTH")) {
+				char *end, *cursor = line;
+				font_list[enc].dwx = strtol(cursor + 7, &end, 10);
+				cursor = end;
+				font_list[enc].dwy = strtol(cursor + 1, &end, 10);
+			}
 
-    (*list_size) = size;
-    fclose(file);
-    return font_list;
+			else if (strstr(line, "BBX")) {
+				char *end, *cursor = line;
+				font_list[enc].w = strtol(cursor + 4, &end, 10);
+				cursor = end;
+				font_list[enc].h = strtol(cursor + 1, &end, 10);
+				cursor = end;
+				font_list[enc].x_off = strtol(cursor + 1, &end, 10);
+				cursor = end;
+				font_list[enc].y_off = strtol(cursor + 1, &end, 10);
+
+				font_list[enc].map = calloc(font_list[enc].h, sizeof(int));
+			}
+
+			else if (strstr(line, "BITMAP")) {
+				for (int i = 0; i < font_list[enc].h; i++) {
+					free(line);
+					read_line(&line, file);
+					char *end;
+					font_list[enc].map[i] = strtol(line, &end, 16);
+				}
+			}
+
+			free(line);
+		}
+	}
+
+	(*list_size) = size;
+	fclose(file);
+	return font_list;
 }
 
-void draw(int x, int y, char **m, int w, int h, Pixel *color, Image *img){
-    if(!(0 <= x && x < img->w && 0 <= y && y < img->h))
-        return;
+void draw(int x, int y, char **m, int w, int h, Pixel *color, Image *img)
+{
+	if (!(0 <= x && x < img->w && 0 <= y && y < img->h))
+		return;
 
-    for(int i=h - 1; i>=0 && y < img->h; i--, y++){
-        int n_x = x;
-        for(int j=0; j<w && n_x < img->w; j++, n_x++)
-            if(m[i][j])
-                img->data[y][n_x] = (*color);
-    }
+	for (int i = h - 1; i >= 0 && y < img->h; i--, y++) {
+		int n_x = x;
+		for (int j = 0; j < w && n_x < img->w; j++, n_x++)
+			if (m[i][j])
+				img->data[y][n_x] = (*color);
+	}
 }
 
-char** char_matrix(Font *f){
-    int padding = BUFFER_SIZE;
-    for(int i=0; i<f->h; i++){
-        int b = 0, n = f->map[i];
-        if(!n)
-            continue;
+char **char_matrix(Font *f)
+{
+	int padding = BUFFER_SIZE;
+	for (int i = 0; i < f->h; i++) {
+		int b = 0, n = f->map[i];
+		if (!n)
+			continue;
 
-        while(!(n & 1))
-            b++, n >>= 1;
-        
-        padding = (b < padding ? b : padding);
-    }
+		while (!(n & 1))
+			b++, n >>= 1;
 
-    if(padding == BUFFER_SIZE)
-        padding = 0;
+		padding = (b < padding ? b : padding);
+	}
 
-    char **m = calloc(f->h, sizeof(char*));
-    if(!m)
-        return NULL;
-    
-    for(int i=0; i<f->h; i++){
-        m[i] = calloc(f->w, sizeof(char));
-        if(!m[i]){
-            for(int j=0; j<i; j++)
-                free(m[j]);
-            
-            free(m);
-            return NULL;
-        }
+	if (padding == BUFFER_SIZE)
+		padding = 0;
 
-        int n = f->map[i];
-        n >>= padding;
+	char **m = calloc(f->h, sizeof(char *));
+	if (!m)
+		return NULL;
 
-        for(int j=f->w - 1; j>=0; j--)
-            m[i][j] = (n & 1), n >>= 1;
-    }
+	for (int i = 0; i < f->h; i++) {
+		m[i] = calloc(f->w, sizeof(char));
+		if (!m[i]) {
+			for (int j = 0; j < i; j++)
+				free(m[j]);
 
-    return m;
+			free(m);
+			return NULL;
+		}
+
+		int n = f->map[i];
+		n >>= padding;
+
+		for (int j = f->w - 1; j >= 0; j--)
+			m[i][j] = (n & 1), n >>= 1;
+	}
+
+	return m;
 }
 
-void type_text(char *text, int start_x, int start_y, Pixel *color, ProgramState *state){
-    const int L = strlen(text);
-    for(int i=0; i<L; i++){
-        char **m = char_matrix(&state->fonts[text[i]]);
-        if(!m)
-            continue;
+void type_text(char *text, int start_x, int start_y, Pixel *color,
+			   ProgramState *state)
+{
+	const int L = strlen(text);
+	for (int i = 0; i < L; i++) {
+		char **m = char_matrix(&state->fonts[text[i]]);
+		if (!m)
+			continue;
 
-        draw(start_x + state->fonts[text[i]].x_off, start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w, state->fonts[text[i]].h, color, &state->img);
+		draw(start_x + state->fonts[text[i]].x_off,
+			 start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
+			 state->fonts[text[i]].h, color, &state->img);
 
-        start_x += state->fonts[text[i]].dwx;
-        start_y += state->fonts[text[i]].dwy;
-        
-        for(int j=0; j<state->fonts[text[i]].h; j++)
-            free(m[j]);
-        free(m);
-    }
+		start_x += state->fonts[text[i]].dwx;
+		start_y += state->fonts[text[i]].dwy;
+
+		for (int j = 0; j < state->fonts[text[i]].h; j++)
+			free(m[j]);
+		free(m);
+	}
 }
