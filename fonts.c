@@ -68,9 +68,10 @@ Font *load_font(char *path_to_file, char **name, int *list_size)
 
 				if (n_size != size) {
 					font_list = realloc(font_list, n_size * sizeof(Font));
-					for (int j = size; j < n_size; j++)
-						font_list[enc].map = NULL;
-
+					if(!font_list)
+						return font_list;
+					
+					memset(font_list + size, 0, (n_size - size) * sizeof(Font));
 					size = n_size;
 				}
 			}
@@ -172,7 +173,7 @@ void type_text(char *text, int start_x, int start_y, Pixel *color,
 {
 	const int L = strlen(text);
 	for (int i = 0; i < L; i++) {
-		char **m = char_matrix(&state->fonts[text[i]]);
+		char **m = char_matrix(&state->fonts[(unsigned char)text[i]]);
 		if (!m)
 			continue;
 

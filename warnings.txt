@@ -1,0 +1,75 @@
+fonts.c:175:39: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  175 |                 char **m = char_matrix(&state->fonts[text[i]]);
+      |                                                     ^~~~~~~~
+fonts.c:179:30: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  179 |                 draw(start_x + state->fonts[text[i]].x_off,
+      |                                            ^~~~~~~~
+fonts.c:180:27: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  180 |                          start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
+      |                                                ^~~~~~~~
+fonts.c:180:59: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  180 |                          start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
+      |                                                                                ^~~~~~~~
+fonts.c:181:17: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  181 |                          state->fonts[text[i]].h, color, &state->img);
+      |                                      ^~~~~~~~
+fonts.c:183:26: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  183 |                 start_x += state->fonts[text[i]].dwx;
+      |                                        ^~~~~~~~
+fonts.c:184:26: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  184 |                 start_y += state->fonts[text[i]].dwy;
+      |                                        ^~~~~~~~
+fonts.c:186:35: warning: array subscript is of type 'char' [-Wchar-subscripts]
+  186 |                 for (int j = 0; j < state->fonts[text[i]].h; j++)
+      |                                                 ^~~~~~~~
+8 warnings generated.
+image.c:21:21: warning: format specifies type 'char *' but the argument has type 'char (*)[3]' [-Wformat]
+   21 |         fscanf(file, "%s", &magic);
+      |                       ~~   ^~~~~~
+1 warning generated.
+lsystems.c:30:12: warning: array subscript is of type 'char' [-Wchar-subscripts]
+   30 |                 sys.rules[line[0]] = malloc(strlen(line) + 1);
+      |                          ^~~~~~~~
+lsystems.c:31:19: warning: array subscript is of type 'char' [-Wchar-subscripts]
+   31 |                 strcpy(sys.rules[line[0]], line + 2);
+      |                                 ^~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:40: note: expanded from macro 'strcpy'
+  249 | #define strcpy(...) __strcpy_chk_func (__VA_ARGS__)
+      |                                        ^~~~~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:27: note: expanded from macro '__strcpy_chk_func'
+  172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
+      |                                         ^~~~
+lsystems.c:31:19: warning: array subscript is of type 'char' [-Wchar-subscripts]
+   31 |                 strcpy(sys.rules[line[0]], line + 2);
+      |                                 ^~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:40: note: expanded from macro 'strcpy'
+  249 | #define strcpy(...) __strcpy_chk_func (__VA_ARGS__)
+      |                                        ^~~~~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:61: note: expanded from macro '__strcpy_chk_func'
+  172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
+      |                                                                           ^~~~
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_common.h:41:54: note: expanded from macro '__darwin_obsz'
+   41 | #define __darwin_obsz(object) __builtin_object_size (object, _USE_FORTIFY_LEVEL > 1 ? 1 : 0)
+      |                                                      ^~~~~~
+lsystems.c:55:13: warning: array subscript is of type 'char' [-Wchar-subscripts]
+   55 |                         if (!next[(*init)[i]]) {
+      |                                  ^~~~~~~~~~~
+lsystems.c:62:16: warning: array subscript is of type 'char' [-Wchar-subscripts]
+   62 |                                 repl = next[(*init)[i]];
+      |                                            ^~~~~~~~~~~
+5 warnings generated.
+main.c:92:8: warning: unused variable 'end' [-Wunused-variable]
+   92 |         char *end;
+      |               ^~~
+1 warning generated.
+turtle.c:85:20: warning: comparison of integers of different signs: 'int' and 'unsigned long' [-Wsign-compare]
+   85 |         for (int i = 0; i < strlen(s); i++) {
+      |                         ~ ^ ~~~~~~~~~
+1 warning generated.
+utils.c:12:16: warning: comparison of integers of different signs: 'int' and 'unsigned long' [-Wsign-compare]
+   12 |         while (cursor < strlen(cmd) && isalpha(cmd[cursor]))
+      |                ~~~~~~ ^ ~~~~~~~~~~~
+utils.c:21:57: warning: result of comparison of constant -1 with expression of type 'unsigned char' is always true [-Wtautological-constant-out-of-range-compare]
+   21 |         while (fscanf(stream, "%c", &c) == 1 && c != '\n' && c != EOF) {
+      |                                                              ~ ^  ~~~
+2 warnings generated.
