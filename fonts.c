@@ -158,7 +158,6 @@ char** char_matrix(Font *f){
 void type_text(char *text, int start_x, int start_y, Pixel *color, ProgramState *state){
     const int L = strlen(text);
     for(int i=0; i<L; i++){
-        printf("%d\n", i);
         char **m = char_matrix(&state->fonts[text[i]]);
         if(!m)
             continue;
