@@ -18,7 +18,7 @@ Image load_image(char *path_to_file)
 	Image img;
 	char magic[3];
 	int max_val;
-	fscanf(file, "%s", &magic);
+	fscanf(file, "%s", magic);
 	fscanf(file, "%d %d", &img.w, &img.h);
 	fscanf(file, "%d", &max_val);
 	fgetc(file);

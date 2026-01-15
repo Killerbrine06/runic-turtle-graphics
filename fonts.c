@@ -177,14 +177,14 @@ void type_text(char *text, int start_x, int start_y, Pixel *color,
 		if (!m)
 			continue;
 
-		draw(start_x + state->fonts[text[i]].x_off,
-			 start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
-			 state->fonts[text[i]].h, color, &state->img);
+		draw(start_x + state->fonts[(unsigned char)text[i]].x_off,
+			 start_y + state->fonts[(unsigned char)text[i]].y_off, m, state->fonts[(unsigned char)text[i]].w,
+			 state->fonts[(unsigned char)text[i]].h, color, &state->img);
 
-		start_x += state->fonts[text[i]].dwx;
-		start_y += state->fonts[text[i]].dwy;
+		start_x += state->fonts[(unsigned char)text[i]].dwx;
+		start_y += state->fonts[(unsigned char)text[i]].dwy;
 
-		for (int j = 0; j < state->fonts[text[i]].h; j++)
+		for (int j = 0; j < state->fonts[(unsigned char)text[i]].h; j++)
 			free(m[j]);
 		free(m);
 	}

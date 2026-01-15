@@ -1,32 +1,3 @@
-fonts.c:175:39: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  175 |                 char **m = char_matrix(&state->fonts[text[i]]);
-      |                                                     ^~~~~~~~
-fonts.c:179:30: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  179 |                 draw(start_x + state->fonts[text[i]].x_off,
-      |                                            ^~~~~~~~
-fonts.c:180:27: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  180 |                          start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
-      |                                                ^~~~~~~~
-fonts.c:180:59: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  180 |                          start_y + state->fonts[text[i]].y_off, m, state->fonts[text[i]].w,
-      |                                                                                ^~~~~~~~
-fonts.c:181:17: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  181 |                          state->fonts[text[i]].h, color, &state->img);
-      |                                      ^~~~~~~~
-fonts.c:183:26: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  183 |                 start_x += state->fonts[text[i]].dwx;
-      |                                        ^~~~~~~~
-fonts.c:184:26: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  184 |                 start_y += state->fonts[text[i]].dwy;
-      |                                        ^~~~~~~~
-fonts.c:186:35: warning: array subscript is of type 'char' [-Wchar-subscripts]
-  186 |                 for (int j = 0; j < state->fonts[text[i]].h; j++)
-      |                                                 ^~~~~~~~
-8 warnings generated.
-image.c:21:21: warning: format specifies type 'char *' but the argument has type 'char (*)[3]' [-Wformat]
-   21 |         fscanf(file, "%s", &magic);
-      |                       ~~   ^~~~~~
-1 warning generated.
 lsystems.c:30:12: warning: array subscript is of type 'char' [-Wchar-subscripts]
    30 |                 sys.rules[line[0]] = malloc(strlen(line) + 1);
       |                          ^~~~~~~~

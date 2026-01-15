@@ -163,6 +163,9 @@ void perform_font(char *cmd, ProgramState *current_state,
 	free_font(new_state.fonts, new_state.fonts_size);
 	new_state.fonts = font_dup(new_font, new_size);
 	new_state.fonts_size = new_size;
+	if(new_state.font_name)
+		free(new_state.font_name);
+	
 	new_state.font_name = name;
 	free_font(new_font, new_size);
 
