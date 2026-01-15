@@ -157,6 +157,35 @@ void perform_font(char *cmd, ProgramState *current_state, StackNode **undo_stack
     printf("Loaded %s (bitmap font %s)\n", path_to_file, current_state->font_name);
 }
 
+void perform_type(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack){
+    if(current_state->img.w == -1) {
+        printf("No image loaded\n");
+        return;
+    }
+
+    if(!current_state->fonts){
+        printf("No font loaded\n");
+        return;
+    }
+
+    int start_x, start_y;
+    char *text;
+    Pixel color;
+    get_type_args(cmd, &text, &start_x, &start_y, &color);
+    ProgramState new_state = state_dup((*current_state));
+    type_text(text, start_x, start_y, &color, &new_state);
+
+    int len = snprintf(NULL, 0, "Text written\n");
+    free(new_state.last_output);
+    new_state.last_output = malloc(len + 5);
+    snprintf(new_state.last_output, len + 1, "Text written\n");
+
+    update_state(undo_stack, redo_stack, current_state, &new_state);
+
+    printf("Text written\n");
+
+}
+
 int main(){
     ProgramState current_state = init_state();
     StackNode *undo_stack = NULL, *redo_stack = NULL;
@@ -245,35 +274,7 @@ int main(){
             perform_font(cmd, &current_state, &undo_stack, &redo_stack);
         
         else if(!strcmp(cmd_name, "TYPE")){
-            if(current_state.img.w == -1) {
-                printf("No image loaded\n");
-                free(cmd_name);
-                free(cmd);
-                continue;
-            }
-
-            if(!current_state.fonts){
-                printf("No font loaded\n");
-                free(cmd_name);
-                free(cmd);
-                continue;
-            }
-
-            int start_x, start_y;
-            char *text;
-            Pixel color;
-            get_type_args(cmd, &text, &start_x, &start_y, &color);
-            ProgramState new_state = state_dup(current_state);
-            type_text(text, start_x, start_y, &color, &new_state);
-            
-            int len = snprintf(NULL, 0, "Text written\n");
-            free(new_state.last_output);
-            new_state.last_output = malloc(len + 5);
-            snprintf(new_state.last_output, len + 1, "Text written\n");
-            
-            update_state(&undo_stack, &redo_stack, &current_state, &new_state);
-
-            printf("Text written\n");
+            perform_type(cmd, &current_state, &undo_stack, &redo_stack);
         }
 
         free(cmd_name);
