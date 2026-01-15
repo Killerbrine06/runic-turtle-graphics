@@ -64,7 +64,8 @@ void deriv(char **init, int n, char **next, char **final)
 			const int repl_len = strlen(repl);
 			while (len + repl_len + 1 >= size) {
 				char *new_ptr;
-				size += BUFFER_SIZE, new_ptr = realloc((*final), size);
+				size += BUFFER_SIZE;
+				new_ptr = realloc((*final), size);
 				if (!new_ptr) {
 					free((*final));
 					free((*init));

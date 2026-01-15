@@ -293,9 +293,8 @@ int main(void)
 		else if (!strcmp(cmd_name, "FONT"))
 			perform_font(cmd, &current_state, &undo_stack, &redo_stack);
 
-		else if (!strcmp(cmd_name, "TYPE")) {
+		else if (!strcmp(cmd_name, "TYPE"))
 			perform_type(cmd, &current_state, &undo_stack, &redo_stack);
-		}
 
 		free(cmd_name);
 		free(cmd);

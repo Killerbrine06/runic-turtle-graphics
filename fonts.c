@@ -4,14 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-font *load_font(char *path_to_file, char **name, int *list_size)
-{
-	FILE *file = fopen(path_to_file, "r");
-	font *font_list = NULL;
-	if (!file)
-		return font_list;
-
-	int cnt = 0, ok = 0;
+void check_header(char **name, FILE *file, int *cnt, int *ok){
 	while (1) {
 		char *line;
 		read_line(&line, file);
@@ -24,19 +17,30 @@ font *load_font(char *path_to_file, char **name, int *list_size)
 		else if (_strnstr(line, "FONT ", 6)) {
 			(*name) = calloc(strlen(line) + 1, 1);
 			strcpy((*name), line + 5);
-			ok++;
+			(*ok)++;
 		}
 
 		else if (strstr(line, "CHARS ")) {
 			char *end;
-			cnt = strtol(line + 6, &end, 10);
+			(*cnt) = strtol(line + 6, &end, 10);
 			free(line);
-			ok++;
+			(*ok)++;
 			break;
 		}
 
 		free(line);
 	}
+}
+
+font *load_font(char *path_to_file, char **name, int *list_size)
+{
+	FILE *file = fopen(path_to_file, "r");
+	font *font_list = NULL;
+	if (!file)
+		return font_list;
+
+	int cnt = 0, ok = 0;
+	check_header(name, file, &cnt, &ok);
 
 	if (ok != 2)
 		return font_list;
