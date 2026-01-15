@@ -133,18 +133,19 @@ ProgramState state_dup(ProgramState state){
         new_state.font_name = strdup(state.font_name);
     else new_state.font_name = NULL;
     
-    new_state.fonts = font_dup(state.fonts);
+    new_state.fonts = font_dup(state.fonts, state.fonts_size);
+    new_state.fonts_size = state.fonts_size;
 
     return new_state;
 }
 
-Font* font_dup(Font *f){
+Font* font_dup(Font *f, int size){
     Font *new = NULL;
     if(!f)
         return new;
 
-    new = calloc(BUFFER_SIZE, sizeof(Font));
-    for(int i=0; i<BUFFER_SIZE; i++){
+    new = calloc(size, sizeof(Font));
+    for(int i=0; i<size; i++){
         if(!f[i].map)
             continue;
 
@@ -208,11 +209,11 @@ void free_img(Image img){
     free(img.data);
 }
 
-void free_font(Font *f){
+void free_font(Font *f, int size){
     if(!f)
         return;
 
-    for(int i=0; i<BUFFER_SIZE; i++){
+    for(int i=0; i<size; i++){
         if(!f[i].map)
             continue;
         
@@ -225,7 +226,7 @@ void free_font(Font *f){
 void free_state(ProgramState *state){
     free_lsys(state->lsys);
     free_img(state->img);
-    free_font(state->fonts);
+    free_font(state->fonts, state->fonts_size);
     free(state->last_output);
 
     if(state->font_name)

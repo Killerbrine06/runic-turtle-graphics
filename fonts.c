@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Font* load_font(char *path_to_file, char **name){
+Font* load_font(char *path_to_file, char **name, int *list_size){
     FILE *file = fopen(path_to_file, "r");
     Font *font_list = NULL;
     if(!file)
@@ -99,6 +99,7 @@ Font* load_font(char *path_to_file, char **name){
         }
     }
 
+    (*list_size) = size;
     fclose(file);
     return font_list;
 }

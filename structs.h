@@ -22,6 +22,7 @@ typedef struct {
 
 typedef struct {
     char *last_output, *font_name;
+    int fonts_size;
     Image img;
     LSystem lsys;
     Font *fonts;

@@ -135,7 +135,8 @@ void perform_font(char *cmd, ProgramState *current_state, StackNode **undo_stack
     }
 
     char *name;
-    Font *new_font = load_font(path_to_file, &name);
+    int new_size;
+    Font *new_font = load_font(path_to_file, &name, &new_size);
     
     if(!new_font){
         printf("Failed to load %s\n", path_to_file);
@@ -143,10 +144,11 @@ void perform_font(char *cmd, ProgramState *current_state, StackNode **undo_stack
     }
     
     ProgramState new_state = state_dup((*current_state));
-    free_font(new_state.fonts);
-    new_state.fonts = font_dup(new_font);
-    free_font(new_font);
+    free_font(new_state.fonts, new_state.fonts_size);
+    new_state.fonts = font_dup(new_font, new_size);
+    new_state.fonts_size = new_size;
     new_state.font_name = name;
+    free_font(new_font, new_size);
     
     int len = snprintf(NULL, 0, "Loaded %s (bitmap font %s)\n", path_to_file, name);
     free(new_state.last_output);
@@ -155,6 +157,7 @@ void perform_font(char *cmd, ProgramState *current_state, StackNode **undo_stack
 
     update_state(undo_stack, redo_stack, current_state, &new_state);
     printf("Loaded %s (bitmap font %s)\n", path_to_file, current_state->font_name);
+    free(path_to_file);
 }
 
 void perform_type(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack){
@@ -183,7 +186,7 @@ void perform_type(char *cmd, ProgramState *current_state, StackNode **undo_stack
     update_state(undo_stack, redo_stack, current_state, &new_state);
 
     printf("Text written\n");
-
+    free(text);
 }
 
 int main(){
