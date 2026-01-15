@@ -58,12 +58,18 @@ Font* load_font(char *path_to_file, char **name, int *list_size){
                 char *end;
                 enc = strtol(line + 9, &end, 10);
 
+                if(enc < 0)
+                    enc = 0;
+
                 int n_size = size;
                 while(enc >= n_size)
                     n_size += BUFFER_SIZE;
                 
-                if(n_size != size)
-                    font_list = realloc(font_list, n_size * sizeof(Font)), size = n_size;
+                if(n_size != size){
+                    font_list = realloc(font_list, n_size * sizeof(Font));
+                    for(int j=size; j<n_size; j++)
+                        font_list[enc].map = NULL;
+                }
             }
 
             else if(strstr(line, "DWIDTH")){
