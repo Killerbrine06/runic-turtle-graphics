@@ -1,1 +1,12 @@
-## Tema
+# Tema 3 - Runic
+Vlad George Cacenschi 314CD
+
+---
+
+Sistemul implementat retine in snapshoturi starile programului de-a lungul rularii pentru functionalitatea undo/redo. Snapshotul este alcatuit din structuri pentru fiecare element al programului: L-System, Image, Font. De asemenea sunt folosite structuri pentru a grupa datele testoasei.
+
+Fiecare fisier dependinta(.bdf, .ppm etc) sunt parcurse conform formatului descris.
+
+Structura proiectului este data de obiectul cu care lucrez. Astfel pentru lucrul cu imagini este image.c/.h, pentru fonturi fonts.c/.h samd.
+
+Gestionarea snapshoturilor se face prin liste inlantuite alocate dinamic.
