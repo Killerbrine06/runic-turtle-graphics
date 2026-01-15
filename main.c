@@ -164,7 +164,6 @@ int main(){
     while(1){
         char *cmd = NULL;
         read_line(&cmd, stdin);
-        // printf("%s\n", cmd);
 
         char *cmd_name;
         get_command_name(cmd, &cmd_name);
@@ -264,7 +263,15 @@ int main(){
             char *text;
             Pixel color;
             get_type_args(cmd, &text, &start_x, &start_y, &color);
-            type_text(text, start_x, start_y, &color, &current_state);
+            ProgramState new_state = state_dup(current_state);
+            type_text(text, start_x, start_y, &color, &new_state);
+            
+            int len = snprintf(NULL, 0, "Text written\n");
+            free(new_state.last_output);
+            new_state.last_output = malloc(len + 5);
+            snprintf(new_state.last_output, len + 1, "Text written\n");
+            
+            update_state(&undo_stack, &redo_stack, &current_state, &new_state);
 
             printf("Text written\n");
         }
