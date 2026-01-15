@@ -20,7 +20,7 @@ Font* load_font(char *path_to_file, char **name){
             break;
         }
 
-        else if(strnstr(line, "FONT ", 6)){
+        else if(_strnstr(line, "FONT ", 6)){
             (*name) = calloc(strlen(line) + 1, 1);
             strcpy((*name), line + 5);
             ok++;

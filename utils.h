@@ -23,5 +23,6 @@ void free_font(Font *f);
 void update_state(StackNode **undo_stack, StackNode **redo_stack, ProgramState *current_state, ProgramState *new_state);
 void get_turtle_args(Turtle *t, char *cmd);
 void get_type_args(char *cmd, char **text, int *start_x, int *start_y, Pixel *color);
+char* _strnstr(char *big, char *little, int n);
 
 #endif

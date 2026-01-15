@@ -300,3 +300,17 @@ void get_type_args(char *cmd, char **text, int *start_x, int *start_y, Pixel *co
     cursor = end + 1;
     color->b = strtol(cursor, &end, 10);
 }
+
+char* _strnstr(char *big, char *little, int n){
+    const int len_big = strlen(big), len_little = strlen(little);
+    n = (n > len_big ? len_big : n);
+
+    if(n == -1)
+        n = len_big;
+    
+    for(int i=0; i<n; i++)
+        if(i + len_little <= n && !strncmp(big + i, little, len_little))
+            return big + i;
+    
+    return NULL;
+}
