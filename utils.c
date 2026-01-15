@@ -8,8 +8,9 @@
 void get_command_name(char cmd[], char **cmd_name)
 {
 	*cmd_name = calloc(BUFFER_SIZE, sizeof(char));
+	const int len = strlen(cmd);
 	int cursor = 0;
-	while (cursor < strlen(cmd) && isalpha(cmd[cursor]))
+	while (cursor < len && isalpha(cmd[cursor]))
 		(*cmd_name)[cursor] = cmd[cursor], cursor++;
 }
 
@@ -18,7 +19,7 @@ void read_line(char **line, FILE *stream)
 	(*line) = calloc(BUFFER_SIZE, 1);
 	int size = BUFFER_SIZE, len = 0;
 	unsigned char c = 0;
-	while (fscanf(stream, "%c", &c) == 1 && c != '\n' && c != EOF) {
+	while (fscanf(stream, "%c", &c) == 1 && c != '\n') {
 		if (len + 2 >= size) {
 			size += BUFFER_SIZE;
 			char *new_ptr = realloc((*line), size);

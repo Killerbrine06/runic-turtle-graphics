@@ -89,7 +89,6 @@ void perform_turtle(char *cmd, ProgramState *current_state,
 	Turtle t;
 	t.stack = NULL;
 	get_turtle_args(&t, cmd + 7);
-	char *end;
 	char *final = calloc(BUFFER_SIZE, sizeof(char));
 	char *init = strdup(current_state->lsys.axiom);
 	deriv(&init, t.n, current_state->lsys.rules, &final);

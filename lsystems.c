@@ -27,8 +27,8 @@ LSystem load_lsys(char *path_to_file)
 	for (int i = 0; i < sys.rules_count; i++) {
 		// line = malloc(BUFFER_SIZE);
 		read_line(&line, lsys_file);
-		sys.rules[line[0]] = malloc(strlen(line) + 1);
-		strcpy(sys.rules[line[0]], line + 2);
+		sys.rules[(unsigned char)line[0]] = malloc(strlen(line) + 1);
+		strcpy(sys.rules[(unsigned char)line[0]], line + 2);
 		free(line);
 	}
 
@@ -52,14 +52,14 @@ void deriv(char **init, int n, char **next, char **final)
 
 		for (int i = 0; i < L; i++) {
 			char *repl;
-			if (!next[(*init)[i]]) {
+			if (!next[(unsigned char)(*init)[i]]) {
 				def_repl[0] = (*init)[i];
 				def_repl[1] = '\0';
 				repl = def_repl;
 			}
 
 			else
-				repl = next[(*init)[i]];
+				repl = next[(unsigned char)(*init)[i]];
 
 			const int repl_len = strlen(repl);
 			while (len + repl_len + 1 >= size) {

@@ -81,8 +81,8 @@ Image execute_string(Turtle *t, char *s, const Image img)
 	t->s_len = 0;
 	t->s_size = TURTLE_STACK_DEF_SIZE;
 	t->stack = malloc(t->s_size * sizeof(TurtleStack));
-
-	for (int i = 0; i < strlen(s); i++) {
+	const int len = strlen(s);
+	for (int i = 0; i < len; i++) {
 		switch (s[i]) {
 		case '+':
 			t->teta += t->delta;
