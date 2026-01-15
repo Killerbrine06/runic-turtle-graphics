@@ -264,3 +264,39 @@ void get_turtle_args(Turtle *t, char *cmd){
     cuv = strtok(NULL, " ");
     t->b = strtol(cuv, &end, 10);
 }
+
+void get_type_args(char *cmd, char **text, int *start_x, int *start_y, Pixel *color){
+    char *cursor = cmd + 6;
+    
+    (*text) = calloc(BUFFER_SIZE, 1);
+    if(!(*text)){
+        (*start_x) = -1;
+        return;
+    }
+    int size = BUFFER_SIZE, len = 0;
+    for(int i=6; cmd[i] != '"'; i++){
+        if(len + 1 >= size){
+            size += BUFFER_SIZE;
+            *text = realloc((*text), size);
+            if(!(*text)){
+                (*start_x) = -1;
+                return;
+            }
+        }
+        
+        (*text)[len++] = cmd[i];
+        cursor++;
+    }
+    
+    cursor += 2;
+    char *end;
+    (*start_x) = strtol(cursor, &end, 10);
+    cursor = end + 1;
+    (*start_y) = strtol(cursor, &end, 10);
+    cursor = end + 1;
+    color->r = strtol(cursor, &end, 10);
+    cursor = end + 1;
+    color->g = strtol(cursor, &end, 10);
+    cursor = end + 1;
+    color->b = strtol(cursor, &end, 10);
+}

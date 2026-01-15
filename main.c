@@ -127,6 +127,36 @@ void perform_save(char *cmd, ProgramState *current_state){
     free(path_to_file);
 }
 
+void perform_font(char *cmd, ProgramState *current_state, StackNode **undo_stack, StackNode **redo_stack) {
+    char *path_to_file = strdup(cmd + 5);
+    if(!path_to_file){
+        printf("Failed to allocate memory in func main\n");
+        return;
+    }
+
+    char *name;
+    Font *new_font = load_font(path_to_file, &name);
+    
+    if(!new_font){
+        printf("Failed to load %s\n", path_to_file);
+        return;
+    }
+    
+    ProgramState new_state = state_dup((*current_state));
+    free_font(new_state.fonts);
+    new_state.fonts = font_dup(new_font);
+    free_font(new_font);
+    new_state.font_name = name;
+    
+    int len = snprintf(NULL, 0, "Loaded %s (bitmap font %s)\n", path_to_file, name);
+    free(new_state.last_output);
+    new_state.last_output = malloc(len + 5);
+    snprintf(new_state.last_output, len + 1, "Loaded %s (bitmap font %s)\n", path_to_file, new_state.font_name);
+
+    update_state(undo_stack, redo_stack, current_state, &new_state);
+    printf("Loaded %s (bitmap font %s)\n", path_to_file, current_state->font_name);
+}
+
 int main(){
     ProgramState current_state = init_state();
     StackNode *undo_stack = NULL, *redo_stack = NULL;
@@ -212,38 +242,31 @@ int main(){
             perform_turtle(cmd, &current_state, &undo_stack, &redo_stack);
         }
 
-        else if(!strcmp(cmd_name, "FONT")){
-            char *path_to_file = strdup(cmd + 5);
-            if(!path_to_file){
-                printf("Failed to allocate memory in func main\n");
-                free(cmd_name);
-                free(cmd);
-                continue;
-            }
-            char *name;
-            Font *new_font = load_font(path_to_file, &name);
-            
-            if(!new_font){
-                printf("Failed to load %s\n", path_to_file);
+        else if(!strcmp(cmd_name, "FONT"))
+            perform_font(cmd, &current_state, &undo_stack, &redo_stack);
+        
+        else if(!strcmp(cmd_name, "TYPE")){
+            if(current_state.img.w == -1) {
+                printf("No image loaded\n");
                 free(cmd_name);
                 free(cmd);
                 continue;
             }
 
-            ProgramState new_state = state_dup(current_state);
-            free_font(new_state.fonts);
-            new_state.fonts = font_dup(new_font);
-            free_font(new_font);
-            new_state.font_name = name;
+            if(!current_state.fonts){
+                printf("No font loaded\n");
+                free(cmd_name);
+                free(cmd);
+                continue;
+            }
 
-            int len = snprintf(NULL, 0, "Loaded %s (bitmap font %s)\n", path_to_file, name);
-            free(new_state.last_output);
-            new_state.last_output = malloc(len + 5);
-            snprintf(new_state.last_output, len + 1, "Loaded %s (bitmap font %s)\n", path_to_file, new_state.font_name);
+            int start_x, start_y;
+            char *text;
+            Pixel color;
+            get_type_args(cmd, &text, &start_x, &start_y, &color);
+            type_text(text, start_x, start_y, &color, &current_state);
 
-            update_state(&undo_stack, &redo_stack, &current_state, &new_state);
-            printf("Loaded %s (bitmap font %s)\n", path_to_file, current_state.font_name);
-            printf("%d %d %d\n", current_state.fonts['A'].h, current_state.fonts['A'].w, current_state.fonts['A'].map[0]);
+            printf("Text written\n");
         }
 
         free(cmd_name);
