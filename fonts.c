@@ -93,6 +93,9 @@ Font *load_font(char *path_to_file, char **name, int *list_size)
 				cursor = end;
 				font_list[enc].y_off = strtol(cursor + 1, &end, 10);
 
+				if(font_list[enc].map)
+					free(font_list[enc].map);
+					
 				font_list[enc].map = calloc(font_list[enc].h, sizeof(int));
 			}
 

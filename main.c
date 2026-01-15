@@ -156,6 +156,7 @@ void perform_font(char *cmd, ProgramState *current_state,
 
 	if (!new_font) {
 		printf("Failed to load %s\n", path_to_file);
+		free(path_to_file);
 		return;
 	}
 
