@@ -11,6 +11,10 @@
 void perform_load(char *cmd, programstate *current_state,
 				  stacknode **undo_stack, stacknode **redo_stack)
 {
+	if (strlen(cmd) < 6) {
+		printf("Failed to load\n");
+		return;
+	}
 	char *path_to_file = malloc(strlen(cmd));
 	strcpy(path_to_file, cmd + 5);
 
@@ -43,6 +47,10 @@ void perform_load(char *cmd, programstate *current_state,
 void perform_lsystem(char *cmd, programstate *current_state,
 					 stacknode **undo_stack, stacknode **redo_stack)
 {
+	if (strlen(cmd) < 9) {
+		printf("Failed to load %s\n", cmd + 7);
+		return;
+	}
 	char *path_to_file = malloc(strlen(cmd));
 	strcpy(path_to_file, cmd + 8);
 	lsystem new_lsys = load_lsys(path_to_file);
@@ -92,11 +100,9 @@ void perform_turtle(char *cmd, programstate *current_state,
 	char *final = calloc(BUFFER_SIZE, sizeof(char));
 	char *init = strdup(current_state->lsys.axiom);
 	deriv(&init, t.n, current_state->lsys.rules, &final);
-	// printf("%d %s\n", t.n, final);
 	image new_img = execute_string(&t, final, current_state->img);
 	free(t.stack);
 	free(init);
-	// free(final);
 
 	programstate new_state = state_dup((*current_state));
 	free_img(new_state.img);
@@ -163,9 +169,9 @@ void perform_font(char *cmd, programstate *current_state,
 	free_font(new_state.fonts, new_state.fonts_size);
 	new_state.fonts = font_dup(new_font, new_size);
 	new_state.fonts_size = new_size;
-	if(new_state.font_name)
+	if (new_state.font_name)
 		free(new_state.font_name);
-	
+
 	new_state.font_name = name;
 	free_font(new_font, new_size);
 
@@ -213,7 +219,7 @@ void perform_type(char *cmd, programstate *current_state,
 	free(text);
 }
 
-int main()
+int main(void)
 {
 	programstate current_state = init_state();
 	stacknode *undo_stack = NULL, *redo_stack = NULL;
@@ -265,12 +271,6 @@ int main()
 		}
 
 		else if (!strcmp(cmd_name, "LSYSTEM")) {
-			if (strlen(cmd) < 9) {
-				printf("Failed to load %s\n", cmd + 7);
-				free(cmd);
-				free(cmd_name);
-				continue;
-			}
 			perform_lsystem(cmd, &current_state, &undo_stack, &redo_stack);
 		}
 
@@ -279,16 +279,7 @@ int main()
 		}
 
 		else if (!strcmp(cmd_name, "LOAD")) {
-			if (strlen(cmd) < 6) {
-				printf("Failed to load\n");
-				free(cmd);
-				free(cmd_name);
-				continue;
-			}
-
 			perform_load(cmd, &current_state, &undo_stack, &redo_stack);
-			// printf("%d %d %d\n", current_state.img.data[0][0].r,
-			// current_state.img.data[0][0].g, current_state.img.data[0][0].b);
 		}
 
 		else if (!strcmp(cmd_name, "SAVE")) {

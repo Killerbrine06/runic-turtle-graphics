@@ -7,7 +7,7 @@
 
 void get_command_name(char cmd[], char **cmd_name);
 void read_line(char **line, FILE *stream);
-programstate init_state();
+programstate init_state(void);
 void pop(stacknode **stack);
 void clear_stack(stacknode **stack);
 void push(stacknode **stack, programstate state);

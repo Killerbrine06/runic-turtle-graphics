@@ -68,9 +68,9 @@ font *load_font(char *path_to_file, char **name, int *list_size)
 
 				if (n_size != size) {
 					font_list = realloc(font_list, n_size * sizeof(font));
-					if(!font_list)
+					if (!font_list)
 						return font_list;
-					
+
 					memset(font_list + size, 0, (n_size - size) * sizeof(font));
 					size = n_size;
 				}
@@ -93,9 +93,9 @@ font *load_font(char *path_to_file, char **name, int *list_size)
 				cursor = end;
 				font_list[enc].y_off = strtol(cursor + 1, &end, 10);
 
-				if(font_list[enc].map)
+				if (font_list[enc].map)
 					free(font_list[enc].map);
-					
+
 				font_list[enc].map = calloc(font_list[enc].h, sizeof(int));
 			}
 
@@ -167,7 +167,8 @@ void type_text(char *text, int start_x, int start_y, pixel *color,
 			continue;
 
 		draw(start_x + state->fonts[(unsigned char)text[i]].x_off,
-			 start_y + state->fonts[(unsigned char)text[i]].y_off, m, state->fonts[(unsigned char)text[i]].w,
+			 start_y + state->fonts[(unsigned char)text[i]].y_off, m,
+			 state->fonts[(unsigned char)text[i]].w,
 			 state->fonts[(unsigned char)text[i]].h, color, &state->img);
 
 		start_x += state->fonts[(unsigned char)text[i]].dwx;

@@ -36,7 +36,7 @@ void read_line(char **line, FILE *stream)
 	(*line)[len] = '\0';
 }
 
-programstate init_state()
+programstate init_state(void)
 {
 	lsystem l;
 	l.axiom = NULL;
