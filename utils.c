@@ -29,6 +29,8 @@ void read_line(char **line, FILE *stream){
         }
         (*line)[len++] = c;
     }
+
+    (*line)[len] = '\0';
 }
 
 ProgramState init_state(){
