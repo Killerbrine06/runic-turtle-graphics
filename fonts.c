@@ -132,21 +132,7 @@ void draw(int x, int y, char **m, int w, int h, Pixel *color, Image *img)
 
 char **char_matrix(Font *f)
 {
-	int padding = BUFFER_SIZE;
-	for (int i = 0; i < f->h; i++) {
-		int b = 0, n = f->map[i];
-		if (!n)
-			continue;
-
-		while (!(n & 1))
-			b++, n >>= 1;
-
-		padding = (b < padding ? b : padding);
-	}
-
-	if (padding == BUFFER_SIZE)
-		padding = 0;
-
+	const int padding = ((f->w + 7) / 8) * 8 - f->w;
 	char **m = calloc(f->h, sizeof(char *));
 	if (!m)
 		return NULL;

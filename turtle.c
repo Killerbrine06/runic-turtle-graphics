@@ -52,8 +52,8 @@ void draw_line(Image *img, int x0, int y0, int x1, int y1, Pixel p)
 void move(Turtle *t, Image *img)
 {
 	double x0 = t->x, y0 = t->y;
-	double x1 = x0 + t->d * cos(t->teta * M_PI / 180);
-	double y1 = y0 + t->d * sin(t->teta * M_PI / 180);
+	double x1 = x0 + t->d * cos(t->teta * M_PI / 180.0);
+	double y1 = y0 + t->d * sin(t->teta * M_PI / 180.0);
 
 	// if(x1 >= img->w)
 	//     x1 = (double)(img->w - 1);
