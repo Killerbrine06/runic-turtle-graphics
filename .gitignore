@@ -6,3 +6,5 @@ runic.dSYM/
 function_list.pdf
 files/
 *.in
+.vscode/
+.DS_Store
